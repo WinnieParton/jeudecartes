@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+#--------------------------------------------------------------------------------------------------
+#   MAIN APP DATABSE SERVICE
+#--------------------------------------------------------------------------------------------------
+  postgresqldb:
+    image: postgres:alpine
+    restart: always
+    env_file: ./.env
+#--------------------------------------------------------------------------------------------------
+#   WHOLE DATABSES SERVICES MANAGER
+#--------------------------------------------------------------------------------------------------  
+  dbmanager:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      #- 10001:80
+      - 10001:80
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresqldb
+    logging:
+      driver: none
+  app:
+    build: .
+    depends_on:
+      - postgresqldb
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - 8000:8080
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
