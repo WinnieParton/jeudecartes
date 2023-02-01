@@ -1,12 +1,27 @@
 package esgi.infra.service.desk;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import esgi.domain.Deck;
+import esgi.domain.Hero;
+import esgi.domain.PackHeroType;
+import esgi.domain.Player;
+import esgi.domain.RaretyType;
 import esgi.infra.repository.HeroRepository;
 import esgi.infra.repository.PlayerRepository;
+import esgi.infra.service.impl.DeckServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class OpenPackServiceTest {
@@ -16,8 +31,50 @@ public class OpenPackServiceTest {
     @Mock
     private HeroRepository heroRepository;
 
+    @InjectMocks
+    private DeckServiceImpl deckServiceImpl;
+
     @Test
     public void testOpenPack() {
+        // given
+        Player player = new Player();
+        player.setJeton(4);
+        Deck deck = new Deck();
+        player.setDeck(deck);
+        Hero hero1 = new Hero();
+        hero1.setRarity(RaretyType.legendary);
+        hero1.setAvailable(true);
+
+        Hero hero2 = new Hero();
+        hero2.setRarity(RaretyType.rare);
+        hero2.setAvailable(true);
+
+        Hero hero3 = new Hero();
+        hero3.setRarity(RaretyType.commun);
+        hero3.setAvailable(true);
+
+        List<Hero> heroList = Arrays.asList(hero1, hero2, hero3);
+
+        PackHeroType packType = PackHeroType.diamant;
+
+        // when
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+        when(heroRepository.findByRarityAndStatusTrue(RaretyType.legendary)).thenReturn(Arrays.asList(hero1));
+        when(heroRepository.findByRarityAndStatusTrue(RaretyType.rare)).thenReturn(Arrays.asList(hero2));
+        when(heroRepository.findByRarityAndStatusTrue(RaretyType.commun)).thenReturn(Arrays.asList(hero3));
+
+        List<Hero> result = deckServiceImpl.openPack(player, packType);
+
+        // then
+        assertEquals(3, result.size());
+        assertEquals(3, player.getDeck().getHeros().size());
+        assertEquals(3, player.getNbrTiragePackDiament());
+        assertEquals(3, player.getNbrTirage());
+        assertEquals(2, player.getJeton());
+        assertEquals(heroList, result);
+        assertTrue(!hero1.isAvailable());
+        assertTrue(!hero2.isAvailable());
+        assertTrue(!hero3.isAvailable());
 
     }
 }
