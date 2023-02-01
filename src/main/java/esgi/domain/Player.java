@@ -2,70 +2,111 @@ package esgi.domain;
 
 import java.sql.Date;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "players")
 public class Player {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+ 
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
-    @Column(nullable = false)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     private String pseudo;
 
-    @NotNull
-    @Min(0)
-    @Column(nullable = false)
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
     private Integer jeton = 4;
 
-    @OneToOne
+
+    public Integer getJeton() {
+        return jeton;
+    }
+
+    public void setJeton(Integer jeton) {
+        this.jeton = jeton;
+    }
+
     private Deck deck;
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
 
     private Integer nbrTirage = 0;
 
+    public Integer getNbrTirage() {
+        return nbrTirage;
+    }
+
+    public void setNbrTirage(Integer nbrTirage) {
+        this.nbrTirage = nbrTirage;
+    }
+
     private Integer nbrTiragePackArgent = 0;
+
+    public Integer getNbrTiragePackArgent() {
+        return nbrTiragePackArgent;
+    }
+
+    public void setNbrTiragePackArgent(Integer nbrTiragePackArgent) {
+        this.nbrTiragePackArgent = nbrTiragePackArgent;
+    }
 
     private Integer nbrTiragePackDiament = 0;
 
-    @JsonIgnore
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    public Integer getNbrTiragePackDiament() {
+        return nbrTiragePackDiament;
+    }
+
+    public void setNbrTiragePackDiament(Integer nbrTiragePackDiament) {
+        this.nbrTiragePackDiament = nbrTiragePackDiament;
+    }
+
+  
     private Date createdAt;
 
-    @JsonIgnore
-    @UpdateTimestamp
-    @Column(name = "updated_at")
+  
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     private Date updatedAt;
 
-    public Player(@NotBlank @Size(min = 3, max = 50) String pseudo) {
-        this.pseudo = pseudo;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    int min = 3;
+    public int max = 50 ; 
+
+   
+    
+
+    public void Pseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }  
 
 }

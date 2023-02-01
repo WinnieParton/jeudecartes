@@ -1,128 +1,82 @@
-package esgi.domain;
+package esgi.infra.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Hero implements Serializable {
-   
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @NotBlank
+    @Size(min = 3, max = 50)
+    @Column(nullable = false)
     private String name;
 
-   
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @Min(0)
+    @Column(nullable = false)
     private int nbLifePoints;
 
-  
+    @Column(nullable = false)
+    @Min(0)
     private Integer experience = 0;
 
-    public Integer getExperience() {
-        return experience;
-    }
-
-    public void setExperience(Integer experience) {
-        this.experience = experience;
-    }
-
+    @Column(nullable = false)
+    @Min(1)
     private int power;
 
- 
+    @Min(0)
+    @Column(nullable = false)
     private int armor;
 
-  
+    @Column(nullable = false)
     private SpecialityType speciality;
 
-
+    @Column(nullable = false)
     private RaretyType rarity;
 
     private Integer level = 1;
 
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
     private boolean available = true;
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
 
     private boolean status = true;
 
-  
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
     private Date createdAt;
 
-  
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private Date updatedAt;
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Hero() {
-
-        //A REVOIR
-
-        //this.name = name;
-        //this.speciality = speciality;
-        //this.rarity = rarity;
-        calculateBaseStatistics();
-    }
-    
-    public final int min = 3;
-    public final int max = 50;
-  
-    
-    public void Name(String name, SpecialityType speciality, RaretyType rarity, int min, int max) {
-       
-        
+    public Hero(@NotBlank @Size(min = 3, max = 50) String name, SpecialityType speciality, RaretyType rarity) {
         this.name = name;
         this.speciality = speciality;
         this.rarity = rarity;
         calculateBaseStatistics();
-    }  
-
+    }
 
     public void calculateBaseStatistics() {
         // initial base statistics for each speciality
