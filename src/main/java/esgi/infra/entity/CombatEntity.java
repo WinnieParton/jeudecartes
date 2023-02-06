@@ -23,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "combats")
-public class Combat {
+public class CombatEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,7 +52,7 @@ public class Combat {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public Combat(HeroEntity attackingHero, HeroEntity defendingHero, int damageAttackerHero, int damageDefenderHero,
+    public CombatEntity(HeroEntity attackingHero, HeroEntity defendingHero, int damageAttackerHero, int damageDefenderHero,
             int newLifePointsAttacker, int newLifePointsDefender, String result) {
         this.attackingHero = attackingHero;
         this.defendingHero = defendingHero;

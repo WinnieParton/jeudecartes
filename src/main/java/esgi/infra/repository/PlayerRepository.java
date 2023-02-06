@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import esgi.domain.Player;
+import esgi.infra.entity.PlayerEntity;
 
 @Repository
-public interface PlayerRepository extends JpaRepository<Player, Long> {
-    Optional<Player> findByPseudo(String pseudo);
+public interface PlayerRepository extends JpaRepository<PlayerEntity, Long> {
+    Optional<PlayerEntity> findByPseudo(String pseudo);
 }

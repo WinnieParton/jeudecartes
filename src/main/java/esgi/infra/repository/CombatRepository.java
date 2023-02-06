@@ -6,13 +6,14 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import esgi.domain.Combat;
-import esgi.domain.Hero;
+import esgi.infra.entity.CombatEntity;
+import esgi.infra.entity.HeroEntity;
 
 @Repository
-public interface CombatRepository extends JpaRepository<Combat, Long> {
+public interface CombatRepository extends JpaRepository<CombatEntity, Long> {
 
-    List<Combat> findByAttackingHeroOrDefendingHero(Hero attackingHero, Hero defendingHero);
+    List<CombatEntity> findByAttackingHeroOrDefendingHero(HeroEntity attackingHero, HeroEntity defendingHero);
 
-    Optional<Combat> findTopByAttackingHeroAndDefendingHeroOrderByIdDesc(Hero attackingHero, Hero defendingHero);
+    Optional<CombatEntity> findTopByAttackingHeroAndDefendingHeroOrderByIdDesc(HeroEntity attackingHero,
+            HeroEntity defendingHero);
 }

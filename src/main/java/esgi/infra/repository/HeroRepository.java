@@ -5,13 +5,12 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import esgi.domain.Hero;
 import esgi.domain.RaretyType;
+import esgi.infra.entity.HeroEntity;
 
 @Repository
-public interface HeroRepository extends JpaRepository<Hero, Long> { 
-    List<Hero> findByStatusTrue();
+public interface HeroRepository extends JpaRepository<HeroEntity, Long> {
+    List<HeroEntity> findByStatusTrue();
 
-    List<Hero> findByRarityAndStatusTrue(RaretyType rarity);
+    List<HeroEntity> findByRarityAndStatusTrue(RaretyType rarity);
 }
-
