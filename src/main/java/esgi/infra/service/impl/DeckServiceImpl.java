@@ -12,8 +12,10 @@ import esgi.domain.Hero;
 import esgi.domain.PackHeroType;
 import esgi.domain.Player;
 import esgi.domain.RaretyType;
+import esgi.infra.entity.DeckEntity;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.entity.PlayerEntity;
+import esgi.infra.repository.DeckRepository;
 import esgi.infra.repository.HeroRepository;
 import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.desk.OpenPackService;
@@ -24,10 +26,15 @@ import esgi.infra.service.desk.VerifyJetonService;
 public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
     private final PlayerRepository playerRepository;
     private final HeroRepository heroRepository;
+    private final DeckRepository deckRepository;
 
-    public DeckServiceImpl(PlayerRepository playerRepository, HeroRepository heroRepository) {
+    
+
+    public DeckServiceImpl(PlayerRepository playerRepository, HeroRepository heroRepository,
+            DeckRepository deckRepository) {
         this.playerRepository = playerRepository;
         this.heroRepository = heroRepository;
+        this.deckRepository = deckRepository;
     }
 
     @Override
@@ -69,20 +76,37 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         // générer les cartes du pack en utilisant les probabilités de rareté
         List<HeroEntity> heros = generateHeros(numberOfHeros, rarityProbability);
 
-        PlayerEntity play = new PlayerEntity(player.getId(), player.getPseudo(), player.getJeton(),
-                player.getNbrTirage(), player.getNbrTiragePackArgent(), player.getNbrTiragePackDiament());
+        var h = new ArrayList<HeroEntity>();
+
+        for (Hero her : player.getDeck().getHeros()) {
+            h.add(new HeroEntity(her.getId(), her.getName(),
+                    her.getNbLifePoints(), her.getExperience(), her.getPower(),
+                    her.getArmor(), her.getSpeciality(), her.getRarity(), her.getLevel(),
+                    her.isAvailable(), her.isStatus(), her.getCreatedAt(), her.getUpdatedAt()));
+        }
+
+        PlayerEntity play = new PlayerEntity(player.getId(), player.getPseudo(),
+                player.getJeton(),
+                new DeckEntity(player.getDeck().getId(), h, player.getDeck().getCreatedAt(),
+                        player.getDeck().getUpdatedAt()),
+                player.getNbrTirage(),
+                player.getNbrTiragePackArgent(), player.getNbrTiragePackDiament(),
+                player.getCreatedAt(), player.getUpdatedAt());
+
 
         // ajouter les cartes au deck du joueur
         play.getDeck().addAll(heros);
 
         // sauvegarder les modifications du joueur en base de données
         playerRepository.save(play);
+        deckRepository.save(play.getDeck());
 
         var heroL = new ArrayList<Hero>();
 
         for (HeroEntity heroEntity : heros) {
             var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
-                    heroEntity.getNbLifePoints(), heroEntity.getExperience(),
+              
+            heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                     heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
                     heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
                     heroEntity.isStatus(), heroEntity.getCreatedAt(), heroEntity.getUpdatedAt());

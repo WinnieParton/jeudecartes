@@ -53,6 +53,7 @@ public class PlayerServiceImpl
         var player = new ArrayList<Player>();
         for (PlayerEntity playEntity : playerRepository.findAll()) {
             var heroL = new ArrayList<Hero>();
+            System.out.println("ffffffffff   "+playEntity.getDeck().getHeros().size());
             for (HeroEntity heroEntity : playEntity.getDeck().getHeros()) {
                 var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
                         heroEntity.getNbLifePoints(), heroEntity.getExperience(),

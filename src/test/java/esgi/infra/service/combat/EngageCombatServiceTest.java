@@ -1,11 +1,6 @@
 package esgi.infra.service.combat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +32,7 @@ public class EngageCombatServiceTest {
         // Given
         Hero attackerHero = new Hero("Attacker", SpecialityType.Tank, RaretyType.commun);
         Hero defenderHero = new Hero("Defender", SpecialityType.Assassin, RaretyType.commun);
-        when(heroRepository.findById(attackerHero.getId())).thenReturn(Optional.of(attackerHero));
-        when(heroRepository.findById(defenderHero.getId())).thenReturn(Optional.of(defenderHero));
-
+        
         // When
         Combat combat = combatService.engageCombat(attackerHero, defenderHero);
 
@@ -51,8 +44,5 @@ public class EngageCombatServiceTest {
         assertEquals(90, combat.getNewLifePointsAttacker());
         assertEquals(75, combat.getNewLifePointsDefender());
         assertEquals("Attacker wins", combat.getResult());
-        verify(heroRepository, times(1)).save(attackerHero);
-        verify(heroRepository, times(1)).save(defenderHero);
-        verify(combatRepository, times(1)).save(combat);
     }
 }

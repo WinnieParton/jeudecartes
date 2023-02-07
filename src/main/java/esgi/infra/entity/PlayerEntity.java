@@ -68,14 +68,4 @@ public class PlayerEntity {
         this.pseudo = pseudo;
     }
 
-    public PlayerEntity(Long id, @NotBlank @Size(min = 3, max = 50) String pseudo, @NotNull @Min(0) Integer jeton,
-            Integer nbrTirage, Integer nbrTiragePackArgent, Integer nbrTiragePackDiament) {
-        this.id = id;
-        this.pseudo = pseudo;
-        this.jeton = jeton;
-        this.nbrTirage = nbrTirage;
-        this.nbrTiragePackArgent = nbrTiragePackArgent;
-        this.nbrTiragePackDiament = nbrTiragePackDiament;
-    }
-
 }
