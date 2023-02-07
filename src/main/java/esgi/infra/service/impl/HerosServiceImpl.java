@@ -2,7 +2,6 @@ package esgi.infra.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,17 +54,16 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
     }
 
     @Override
-    public Optional<Hero> getById(Long id) {
-        Optional<HeroEntity> heroEntity = heroRepository.findById(id);
+    public Hero getById(Long id) {
+        HeroEntity heroEntity = heroRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Hero with id " + id + " not found !"));
 
-        if (heroEntity.isPresent())
-            return Optional.of(new Hero(heroEntity.get().getId(), heroEntity.get().getName(),
-                    heroEntity.get().getNbLifePoints(), heroEntity.get().getExperience(),
-                    heroEntity.get().getPower(), heroEntity.get().getArmor(), heroEntity.get().getSpeciality(),
-                    heroEntity.get().getRarity(), heroEntity.get().getLevel(), heroEntity.get().isAvailable(),
-                    heroEntity.get().isStatus(), heroEntity.get().getCreatedAt(), heroEntity.get().getUpdatedAt()));
-        else
-            return Optional.empty();
+        return new Hero(heroEntity.getId(), heroEntity.getName(),
+                heroEntity.getNbLifePoints(), heroEntity.getExperience(),
+                heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
+                heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
+                heroEntity.isStatus(), heroEntity.getCreatedAt(), heroEntity.getUpdatedAt());
+
     }
 
     public HeroEntity calculateBaseStatistics(HeroEntity hero) {

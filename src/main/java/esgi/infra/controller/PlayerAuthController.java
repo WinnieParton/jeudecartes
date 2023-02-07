@@ -2,7 +2,6 @@ package esgi.infra.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -47,11 +46,11 @@ public class PlayerAuthController {
                                         new MessageResponse("Erreur de validation de data", err),
                                         HttpStatus.BAD_REQUEST);
                 }
-                Optional<Player> j = getPlayerByPseudoService.findByPseudo(playerDto.getPseudo());
+                Player j = getPlayerByPseudoService.findByPseudo(playerDto.getPseudo());
 
-                if (j.isPresent()) {
+                if (j != null) {
                         return new ResponseEntity<>(new MessageResponse("Pseudo exist already !",
-                                        j.get()), HttpStatus.FOUND);
+                                        j), HttpStatus.FOUND);
                 }
 
                 return new ResponseEntity<>(new MessageResponse("Action succes !",

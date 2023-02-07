@@ -2,7 +2,6 @@ package esgi.infra.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -63,42 +62,31 @@ public class CombatController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        Optional<Player> currentPlayer = getByIdPlayerService.getById(gameStartDto.getAttackerPlayer());
+        Player currentPlayer = getByIdPlayerService.getById(gameStartDto.getAttackerPlayer());
 
-        if (!currentPlayer.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Player attacked not found !"), HttpStatus.NOT_FOUND);
-        Optional<Hero> currentHero = getByIdHeroServiceService.getById(gameStartDto.getAttackerHero());
+        Hero currentHero = getByIdHeroServiceService.getById(gameStartDto.getAttackerHero());
 
-        if (!currentHero.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Hero attacked not found !"), HttpStatus.NOT_FOUND);
-
-        if (!verifyHeroInDeckPlayerService.verifyHeroInDeckPlayerService(currentPlayer.get(), currentHero.get()))
+        if (!verifyHeroInDeckPlayerService.verifyHeroInDeckPlayerService(currentPlayer, currentHero))
             return new ResponseEntity<>(new MessageResponse("The Hero attacked is not for player attacked !"),
                     HttpStatus.BAD_REQUEST);
 
-        Optional<Player> adversePlayer = getByIdPlayerService.getById(gameStartDto.getDefenderPlayer());
+        Player adversePlayer = getByIdPlayerService.getById(gameStartDto.getDefenderPlayer());
 
-        if (!adversePlayer.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Player deffensed not found !"), HttpStatus.NOT_FOUND);
+        Hero adverseHero = getByIdHeroServiceService.getById(gameStartDto.getDefenderHero());
 
-        Optional<Hero> adverseHero = getByIdHeroServiceService.getById(gameStartDto.getDefenderHero());
-
-        if (!adverseHero.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Hero attacked not found !"), HttpStatus.NOT_FOUND);
-
-        if (!verifyHeroInDeckPlayerService.verifyHeroInDeckPlayerService(adversePlayer.get(), adverseHero.get()))
+        if (!verifyHeroInDeckPlayerService.verifyHeroInDeckPlayerService(adversePlayer, adverseHero))
             return new ResponseEntity<>(new MessageResponse("The Hero deffensed is not for player deffensed !"),
                     HttpStatus.BAD_REQUEST);
 
-        if (!verifyStatusCombatService.verifyStatusCombat(currentHero.get(), adverseHero.get()))
+        if (!verifyStatusCombatService.verifyStatusCombat(currentHero, adverseHero))
             return new ResponseEntity<>(
                     new MessageResponse("Combat finish !",
-                            findByHeroCombatService.findByHeroCombat(currentHero.get(), adverseHero.get())),
+                            findByHeroCombatService.findByHeroCombat(currentHero, adverseHero)),
                     HttpStatus.OK);
 
         return new ResponseEntity<>(
                 new MessageResponse("Action succes !",
-                        engageCombatService.engageCombat(currentHero.get(), adverseHero.get())),
+                        engageCombatService.engageCombat(currentHero, adverseHero)),
                 HttpStatus.CREATED);
 
     }

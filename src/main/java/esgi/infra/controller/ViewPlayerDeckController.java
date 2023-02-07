@@ -1,7 +1,5 @@
 package esgi.infra.controller;
 
-import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +28,10 @@ public class ViewPlayerDeckController {
     @GetMapping(value = "/deck/{idplayer}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> viewPlayerDeck(@PathVariable(value = "idplayer") Long idplayer) {
 
-        Optional<Player> j = getByIdPlayerService.getById(idplayer);
-
-        if (!j.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Player not found !"), HttpStatus.NOT_FOUND);
+        Player j = getByIdPlayerService.getById(idplayer);
 
         return new ResponseEntity<>(new MessageResponse("Action succes !",
-                viewPlayerDeckService.viewPlayerDeck(j.get())),
+                viewPlayerDeckService.viewPlayerDeck(j)),
                 HttpStatus.OK);
     }
 }

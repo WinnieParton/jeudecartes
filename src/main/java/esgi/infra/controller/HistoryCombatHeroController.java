@@ -1,7 +1,5 @@
 package esgi.infra.controller;
 
-import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,12 +26,9 @@ public class HistoryCombatHeroController {
 
     @GetMapping("/combat/{idhero}")
     public ResponseEntity<?> retrieveHeroCombats(@PathVariable(value = "idhero") Long idhero) {
-        Optional<Hero> hero = getByIdHeroServiceService.getById(idhero);
-
-        if (!hero.isPresent())
-            return new ResponseEntity<>(new MessageResponse("Hero not found !"), HttpStatus.NOT_FOUND);
+        Hero hero = getByIdHeroServiceService.getById(idhero);
 
         return new ResponseEntity<>(new MessageResponse("Action succes !",
-                combatsService.retrieveHeroCombats(hero.get())), HttpStatus.OK);
+                combatsService.retrieveHeroCombats(hero)), HttpStatus.OK);
     }
 }
