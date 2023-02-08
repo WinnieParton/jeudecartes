@@ -68,15 +68,15 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
 
     public HeroEntity calculateBaseStatistics(HeroEntity hero) {
         // initial base statistics for each speciality
-        if (hero.getSpeciality().equals(SpecialityType.Tank)) {
+        if (hero.getSpeciality().equals(SpecialityType.TANK)) {
             hero.setNbLifePoints(1000);
             hero.setPower(100);
             hero.setArmor(20);
-        } else if (hero.getSpeciality().equals(SpecialityType.Assassin)) {
+        } else if (hero.getSpeciality().equals(SpecialityType.ASSASSIN)) {
             hero.setNbLifePoints(800);
             hero.setPower(200);
             hero.setArmor(5);
-        } else if (hero.getSpeciality().equals(SpecialityType.Mage)) {
+        } else if (hero.getSpeciality().equals(SpecialityType.MAGE)) {
             hero.setNbLifePoints(700);
             hero.setPower(150);
             hero.setArmor(10);
@@ -88,16 +88,16 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
 
         var armor = hero.getArmor();
         // apply rarity bonuses
-        if (hero.getRarity().equals(RaretyType.commun)) {
+        if (hero.getRarity().equals(RaretyType.COMMON)) {
             // no bonus
-        } else if (hero.getRarity().equals(RaretyType.rare)) {
+        } else if (hero.getRarity().equals(RaretyType.RARE)) {
             nbLifePoints += hero.getNbLifePoints() * 0.1;
             hero.setNbLifePoints(nbLifePoints);
             power += hero.getPower() * 0.1;
             hero.setPower(power);
             armor += hero.getArmor() * 0.1;
             hero.setArmor(armor);
-        } else if (hero.getRarity().equals(RaretyType.legendary)) {
+        } else if (hero.getRarity().equals(RaretyType.LEGENDARY)) {
             nbLifePoints += hero.getNbLifePoints() * 0.2;
             hero.setNbLifePoints(nbLifePoints);
             power += hero.getPower() * 0.2;

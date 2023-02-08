@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import esgi.domain.Combat;
 import esgi.domain.Hero;
+import esgi.domain.SpecialityType;
 import esgi.infra.entity.CombatEntity;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.CombatRepository;
@@ -32,8 +33,74 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
         this.combatRepository = combatRepository;
     }
 
+    public boolean isAlive(Long heroId) {
+        HeroEntity hero = heroRepository.findById(heroId)
+                .orElseThrow(() -> new IllegalArgumentException("Hero not found !"));
+        return hero.getNbLifePoints() > 0;
+    }
+
+    public int calculateDamage(HeroEntity attacker, HeroEntity defender) {
+        int damage = attacker.getPower() - defender.getArmor();
+        if (defender.getSpeciality().equals(SpecialityType.MAGE)
+                && attacker.getSpeciality().equals(SpecialityType.TANK)) {
+            damage += 20;
+        } else if (defender.getSpeciality().equals(SpecialityType.TANK)
+                && attacker.getSpeciality().equals(SpecialityType.ASSASSIN)) {
+            damage += 30;
+        } else if (defender.getSpeciality().equals(SpecialityType.ASSASSIN)
+                && attacker.getSpeciality().equals(SpecialityType.MAGE)) {
+            damage += 25;
+        }
+        return damage;
+    }
+
+    public int attack(HeroEntity hero, HeroEntity enemy) {
+
+        int damage = calculateDamage(hero, enemy);
+        enemy.setNbLifePoints(enemy.getNbLifePoints() - damage);
+        heroRepository.save(enemy);
+
+        return damage;
+    }
+
+    public void addExperiencePoints(HeroEntity hero, int points) {
+        hero.setExperience(hero.getExperience() + points);
+        if (hero.getExperience() % 5 == 0) {
+            hero.setLevel(hero.getLevel() + 1);
+            hero.setNbLifePoints((int) (hero.getNbLifePoints() * 1.1));
+            hero.setPower((int) (hero.getPower() * 1.1));
+            hero.setArmor((int) (hero.getArmor() * 1.1));
+        }
+        heroRepository.save(hero);
+    }
+
     @Override
-    public Combat engageCombat(Hero atHero, Hero defHero) {
+    public String engageCombat(Hero atHero, Hero defHero) {
+
+        while (isAlive(atHero.getId()) && isAlive(defHero.getId())) {
+
+            HeroEntity attackerHero = heroRepository.findById(atHero.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Hero attacked not found !"));
+
+            HeroEntity defenderHero = heroRepository.findById(defHero.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Hero defended not found !"));
+
+            CombatEntity combat = new CombatEntity(attackerHero, defenderHero);
+
+            var defenderDamage = attack(attackerHero, defenderHero);
+            combat.setDamageDefenderHero(defenderDamage);
+            if (defenderHero.getNbLifePoints() - defenderDamage >= 0)
+                combat.setNewLifePointsDefender(defenderHero.getNbLifePoints() - defenderDamage);
+
+            if (isAlive(defHero.getId())) {
+                var attackerDamage = attack(defenderHero, attackerHero);
+                combat.setDamageAttackerHero(attackerDamage);
+                if (attackerHero.getNbLifePoints() - attackerDamage >= 0)
+                    combat.setNewLifePointsAttacker(attackerHero.getNbLifePoints() - attackerDamage);
+            }
+            combat.setResult("Draw");
+            combatRepository.save(combat);
+        }
 
         HeroEntity attackerHero = heroRepository.findById(atHero.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Hero attacked not found !"));
@@ -41,45 +108,31 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
         HeroEntity defenderHero = heroRepository.findById(defHero.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Hero defended not found !"));
 
-        int attackerDamage = attackerHero.getPower();
-        int defenderDamage = defenderHero.getPower() - attackerHero.getArmor();
-        int newpointatt = 0, newpointdeff = 0;
+        if (isAlive(atHero.getId())) {
+            System.out.println("Hero attacked " + atHero.getId() + " won the combat");
 
-        if (defenderHero.getNbLifePoints() - attackerDamage > 0)
-            newpointdeff = defenderHero.getNbLifePoints() - attackerDamage;
+            CombatEntity combat = new CombatEntity(attackerHero, defenderHero);
+            combat.setResult("Hero attacked won the combat");
+            combat.setNewLifePointsAttacker(attackerHero.getNbLifePoints());
+            combat.setNewLifePointsDefender(defenderHero.getNbLifePoints());
+            combatRepository.save(combat);
 
-        if (attackerHero.getNbLifePoints() - defenderDamage > 0)
-            newpointatt = defenderHero.getNbLifePoints() - attackerDamage;
-
-        defenderHero.setNbLifePoints(newpointdeff);
-        attackerHero.setNbLifePoints(newpointatt);
-        defHero.setNbLifePoints(newpointdeff);
-        atHero.setNbLifePoints(newpointatt);
-
-        String result;
-        if (defenderHero.getNbLifePoints() <= 0) {
-            result = "Attacker wins";
-            defenderHero.setAvailable(false);
-            attackerHero.setExperience(attackerHero.getExperience() + 1);
-            defHero.setAvailable(false);
-            atHero.setExperience(attackerHero.getExperience() + 1);
-        } else if (attackerHero.getNbLifePoints() <= 0) {
-            result = "Defender wins";
-            attackerHero.setAvailable(false);
-            atHero.setAvailable(false);
+            addExperiencePoints(attackerHero, 1);
+            return "Hero attacked " + atHero.getId() + " won the combat";
         } else {
-            result = "Draw";
+            System.out.println("Hero defended " + defHero.getId() + " won the combat");
+
+            CombatEntity combat = new CombatEntity(attackerHero, defenderHero);
+            combat.setResult("Hero defended won the combat");
+            combat.setNewLifePointsAttacker(attackerHero.getNbLifePoints());
+            combat.setNewLifePointsDefender(defenderHero.getNbLifePoints());
+            combatRepository.save(combat);
+
+            addExperiencePoints(defenderHero, 1);
+
+            return "Hero defended " + defHero.getId() + " won the combat";
         }
 
-        heroRepository.save(attackerHero);
-        heroRepository.save(defenderHero);
-
-        var combat = combatRepository.save(new CombatEntity(attackerHero, defenderHero, attackerDamage,
-                defenderDamage, attackerHero.getNbLifePoints(), defenderHero.getNbLifePoints(),
-                result));
-
-        return new Combat(combat.getId(), atHero, atHero, attackerDamage, defenderDamage,
-                newpointatt, newpointdeff, result, combat.getCreatedAt(), combat.getUpdatedAt());
     }
 
     @Override
@@ -243,22 +296,4 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
             return Optional.empty();
     }
 
-    // public int attack(Hero hero) {
-    // int damage = power - hero.getArmor();
-    // if (specialty.equals("Tank")) {
-    // if (hero.getSpecialty().equals("Mage")) {
-    // damage += 20;
-    // }
-    // } else if (specialty.equals("Assassin")) {
-    // if (hero.getSpecialty().equals("Tank")) {
-    // damage += 30;
-    // }
-    // } else if (specialty.equals("Mage")) {
-    // if (hero.getSpecialty().equals("Assassin")) {
-    // damage += 25;
-    // }
-    // }
-    // return damage;
-    // }
-    // }
 }

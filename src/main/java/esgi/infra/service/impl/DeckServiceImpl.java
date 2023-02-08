@@ -56,14 +56,14 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         if (PackHeroType.argent.equals(packType)) {
             tokenCost = 1;
             numberOfHeros = 3;
-            rarityProbability = Map.of(RaretyType.legendary.name(), 0.05, RaretyType.rare.name(), 0.2,
-                    RaretyType.commun.name(), 0.75);
+            rarityProbability = Map.of(RaretyType.LEGENDARY.name(), 0.05, RaretyType.RARE.name(), 0.2,
+                    RaretyType.COMMON.name(), 0.75);
             player.setNbrTiragePackArgent(player.getNbrTiragePackArgent() + 1);
         } else if (PackHeroType.diamant.equals(packType)) {
             tokenCost = 2;
             numberOfHeros = 5;
-            rarityProbability = Map.of(RaretyType.legendary.name(), 0.15, RaretyType.rare.name(), 0.35,
-                    RaretyType.commun.name(), 0.5);
+            rarityProbability = Map.of(RaretyType.LEGENDARY.name(), 0.15, RaretyType.RARE.name(), 0.35,
+                    RaretyType.COMMON.name(), 0.5);
             player.setNbrTiragePackDiament(player.getNbrTiragePackDiament() + 1);
 
         } else {
@@ -122,12 +122,12 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         for (int i = 0; i < numberOfHeros; i++) {
             double probability = random.nextDouble();
             RaretyType rarity;
-            if (probability < rarityProbability.get(RaretyType.legendary.name())) {
-                rarity = RaretyType.legendary;
-            } else if (probability < rarityProbability.get(RaretyType.rare.name())) {
-                rarity = RaretyType.rare;
+            if (probability < rarityProbability.get(RaretyType.LEGENDARY.name())) {
+                rarity = RaretyType.LEGENDARY;
+            } else if (probability < rarityProbability.get(RaretyType.RARE.name())) {
+                rarity = RaretyType.RARE;
             } else {
-                rarity = RaretyType.commun;
+                rarity = RaretyType.COMMON;
             }
             // sélectionner un héros aléatoire de la rareté choisie
             List<HeroEntity> heroes = heroRepository.findByRarityAndStatusTrue(rarity);

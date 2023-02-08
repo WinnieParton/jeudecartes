@@ -28,8 +28,8 @@ public class RetrieveHeroCombatsServiceTest {
     @Test
     public void testVerifyStatusCombat() {
         // given
-        Hero attackerHero = new Hero("Attacker", SpecialityType.Tank, RaretyType.commun);
-        Hero defenderHero = new Hero("Defender", SpecialityType.Assassin, RaretyType.commun);
+        Hero attackerHero = new Hero("Attacker", SpecialityType.TANK, RaretyType.COMMON);
+        Hero defenderHero = new Hero("Defender", SpecialityType.ASSASSIN, RaretyType.COMMON);
 
         // mock the combat repository
         // CombatRepository combatRepository = mock(CombatRepository.class);

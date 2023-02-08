@@ -31,8 +31,8 @@ public class FindByHeroCombatServiceTest {
 
     @Test
     public void testFindByHeroCombat() {
-        Hero attackerHero = new Hero("Attacker", SpecialityType.Tank, RaretyType.commun);
-        Hero defenderHero = new Hero("Defender", SpecialityType.Assassin, RaretyType.commun);
+        Hero attackerHero = new Hero("Attacker", SpecialityType.TANK, RaretyType.COMMON);
+        Hero defenderHero = new Hero("Defender", SpecialityType.ASSASSIN, RaretyType.COMMON);
         Combat combat = new Combat(attackerHero, defenderHero, 10, 5, 90, 95, "Draw");
         // when(heroRepository.findById(attackerHero.getId())).thenReturn(Optional.of(attackerHero));
         // when(heroRepository.findById(defenderHero.getId())).thenReturn(Optional.of(defenderHero));

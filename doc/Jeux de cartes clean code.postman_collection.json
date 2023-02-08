@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"picket\",\r\n    \"speciality\":\"Assassin\",\r\n    \"rarety\":\"rare\"\r\n}",
+					"raw": "{\r\n    \"name\":\"picket\",\r\n    \"speciality\":\"ASSASSIN\",\r\n    \"rarety\":\"RARE\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

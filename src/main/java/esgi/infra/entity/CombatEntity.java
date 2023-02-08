@@ -34,13 +34,13 @@ public class CombatEntity {
     @OneToOne
     private HeroEntity defendingHero;
 
-    private int damageAttackerHero;
+    private int damageAttackerHero = 0;
 
-    private int damageDefenderHero;
+    private int damageDefenderHero = 0;
 
-    private int newLifePointsAttacker;
+    private int newLifePointsAttacker = 0;
 
-    private int newLifePointsDefender;
+    private int newLifePointsDefender = 0;
 
     private String result;
 
@@ -52,15 +52,9 @@ public class CombatEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public CombatEntity(HeroEntity attackingHero, HeroEntity defendingHero, int damageAttackerHero, int damageDefenderHero,
-            int newLifePointsAttacker, int newLifePointsDefender, String result) {
+    public CombatEntity(HeroEntity attackingHero, HeroEntity defendingHero) {
         this.attackingHero = attackingHero;
         this.defendingHero = defendingHero;
-        this.damageAttackerHero = damageAttackerHero;
-        this.damageDefenderHero = damageDefenderHero;
-        this.newLifePointsAttacker = newLifePointsAttacker;
-        this.newLifePointsDefender = newLifePointsDefender;
-        this.result = result;
     }
 
 }

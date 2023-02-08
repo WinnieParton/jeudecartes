@@ -30,8 +30,8 @@ public class EngageCombatServiceTest {
     @Test
     public void testEngageCombat() {
         // Given
-        Hero attackerHero = new Hero("Attacker", SpecialityType.Tank, RaretyType.commun);
-        Hero defenderHero = new Hero("Defender", SpecialityType.Assassin, RaretyType.commun);
+        Hero attackerHero = new Hero("Attacker", SpecialityType.TANK, RaretyType.COMMON);
+        Hero defenderHero = new Hero("Defender", SpecialityType.ASSASSIN, RaretyType.COMMON);
         
         // When
         Combat combat = combatService.engageCombat(attackerHero, defenderHero);

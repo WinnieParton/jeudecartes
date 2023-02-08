@@ -29,15 +29,15 @@ public class OpenPackServiceTest {
         // Deck deck = new Deck();
         // player.setDeck(deck);
         // Hero hero1 = new Hero();
-        // hero1.setRarity(RaretyType.legendary);
+        // hero1.setRarity(RaretyType.LEGENDARY);
         // hero1.setAvailable(true);
 
         // Hero hero2 = new Hero();
-        // hero2.setRarity(RaretyType.rare);
+        // hero2.setRarity(RaretyType.RARE);
         // hero2.setAvailable(true);
 
         // Hero hero3 = new Hero();
-        // hero3.setRarity(RaretyType.commun);
+        // hero3.setRarity(RaretyType.COMMON);
         // hero3.setAvailable(true);
 
         // List<Hero> heroList = Arrays.asList(hero1, hero2, hero3);
@@ -46,9 +46,9 @@ public class OpenPackServiceTest {
 
         // // when
         // when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
-        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.legendary)).thenReturn(Arrays.asList(hero1));
-        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.rare)).thenReturn(Arrays.asList(hero2));
-        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.commun)).thenReturn(Arrays.asList(hero3));
+        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.LEGENDARY)).thenReturn(Arrays.asList(hero1));
+        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.RARE)).thenReturn(Arrays.asList(hero2));
+        // when(heroRepository.findByRarityAndStatusTrue(RaretyType.COMMON)).thenReturn(Arrays.asList(hero3));
 
         // List<Hero> result = deckServiceImpl.openPack(player, packType);
 

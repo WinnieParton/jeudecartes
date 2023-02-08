@@ -80,28 +80,28 @@ public class Hero implements Serializable {
 
     public void calculateBaseStatistics() {
         // initial base statistics for each speciality
-        if (this.speciality.equals(SpecialityType.Tank)) {
+        if (this.speciality.equals(SpecialityType.TANK)) {
             this.nbLifePoints = 1000;
             this.power = 100;
             this.armor = 20;
-        } else if (this.speciality.equals(SpecialityType.Assassin)) {
+        } else if (this.speciality.equals(SpecialityType.ASSASSIN)) {
             this.nbLifePoints = 800;
             this.power = 200;
             this.armor = 5;
-        } else if (this.speciality.equals(SpecialityType.Mage)) {
+        } else if (this.speciality.equals(SpecialityType.MAGE)) {
             this.nbLifePoints = 700;
             this.power = 150;
             this.armor = 10;
         }
 
         // apply rarity bonuses
-        if (this.rarity.equals(RaretyType.commun)) {
+        if (this.rarity.equals(RaretyType.COMMON)) {
             // no bonus
-        } else if (this.rarity.equals(RaretyType.rare)) {
+        } else if (this.rarity.equals(RaretyType.RARE)) {
             this.nbLifePoints += this.nbLifePoints * 0.1;
             this.power += this.power * 0.1;
             this.armor += this.armor * 0.1;
-        } else if (this.rarity.equals(RaretyType.legendary)) {
+        } else if (this.rarity.equals(RaretyType.LEGENDARY)) {
             this.nbLifePoints += this.nbLifePoints * 0.2;
             this.power += this.power * 0.2;
             this.armor += this.armor * 0.2;
