@@ -1,6 +1,7 @@
 package esgi.infra.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,7 +32,7 @@ public class DeckEntity {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<HeroEntity> heros;
+    private List<HeroEntity> heros = new ArrayList<HeroEntity>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

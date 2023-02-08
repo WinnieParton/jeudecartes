@@ -1,20 +1,15 @@
 package esgi.infra.entity;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,22 +21,21 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "combats")
-public class CombatEntity {
+@Table(name = "combat_histories")
+public class CombatHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private HeroEntity attackingHero;
+    private int damageAttackerHero = 0;
 
-    @OneToOne
-    private HeroEntity defendingHero;
+    private int damageDefenderHero = 0;
+
+    private int newLifePointsAttacker = 0;
+
+    private int newLifePointsDefender = 0;
 
     private String result;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<CombatHistoryEntity> combatHistories = new ArrayList<CombatHistoryEntity>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -50,14 +44,5 @@ public class CombatEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
-
-    public CombatEntity(HeroEntity attackingHero, HeroEntity defendingHero) {
-        this.attackingHero = attackingHero;
-        this.defendingHero = defendingHero;
-    }
-
-    public void addCombatHistory(CombatHistoryEntity combatHistory) {
-        this.combatHistories.add(combatHistory);
-    }
-
+    
 }

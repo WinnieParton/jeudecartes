@@ -25,8 +25,8 @@ import esgi.infra.service.player.ViewPlayerDeckService;
 @Controller
 @RequestMapping("/api/player")
 public class PlayerAuthController {
-        private IsPseudoPlayerExistService getPlayerByPseudoService;
-        private CreatePlayerService addPlayerService;
+        private final IsPseudoPlayerExistService getPlayerByPseudoService;
+        private final CreatePlayerService addPlayerService;
 
         public PlayerAuthController(IsPseudoPlayerExistService getPlayerByPseudoService,
                         ViewPlayerDeckService viewPlayerDeckService, CreatePlayerService addPlayerService) {

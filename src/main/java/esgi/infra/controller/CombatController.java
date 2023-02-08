@@ -22,6 +22,7 @@ import esgi.infra.service.combat.EngageCombatService;
 import esgi.infra.service.combat.FindByHeroCombatService;
 import esgi.infra.service.combat.VerifyStatusCombatService;
 import esgi.infra.service.heros.GetByIdHeroServiceService;
+import esgi.infra.service.heros.VerifyAvailableHeroService;
 import esgi.infra.service.player.GetByIdPlayerService;
 import esgi.infra.service.player.VerifyHeroInDeckPlayerService;
 
@@ -34,17 +35,20 @@ public class CombatController {
     private final VerifyHeroInDeckPlayerService verifyHeroInDeckPlayerService;
     private final VerifyStatusCombatService verifyStatusCombatService;
     private final FindByHeroCombatService findByHeroCombatService;
+    private final VerifyAvailableHeroService verifyAvailableHeroService;
 
     public CombatController(GetByIdPlayerService getByIdPlayerService, EngageCombatService engageCombatService,
             GetByIdHeroServiceService getByIdHeroServiceService,
             VerifyHeroInDeckPlayerService verifyHeroInDeckPlayerService,
-            VerifyStatusCombatService verifyStatusCombatService, FindByHeroCombatService findByHeroCombatService) {
+            VerifyStatusCombatService verifyStatusCombatService, FindByHeroCombatService findByHeroCombatService,
+            VerifyAvailableHeroService verifyAvailableHeroService) {
         this.getByIdPlayerService = getByIdPlayerService;
         this.engageCombatService = engageCombatService;
         this.getByIdHeroServiceService = getByIdHeroServiceService;
         this.verifyHeroInDeckPlayerService = verifyHeroInDeckPlayerService;
         this.verifyStatusCombatService = verifyStatusCombatService;
         this.findByHeroCombatService = findByHeroCombatService;
+        this.verifyAvailableHeroService = verifyAvailableHeroService;
     }
 
     @PostMapping
@@ -70,12 +74,22 @@ public class CombatController {
             return new ResponseEntity<>(new MessageResponse("The Hero attacked is not for player attacked !"),
                     HttpStatus.BAD_REQUEST);
 
+        if (!verifyAvailableHeroService.verifyAvailableHeroService(currentHero))
+            return new ResponseEntity<>(new MessageResponse(
+                    "The Hero attacked can no longer make a fight by what it has already used in another and lost the fight. !"),
+                    HttpStatus.BAD_REQUEST);
+
         Player adversePlayer = getByIdPlayerService.getById(gameStartDto.getDefenderPlayer());
 
         Hero adverseHero = getByIdHeroServiceService.getById(gameStartDto.getDefenderHero());
 
         if (!verifyHeroInDeckPlayerService.verifyHeroInDeckPlayerService(adversePlayer, adverseHero))
             return new ResponseEntity<>(new MessageResponse("The Hero deffensed is not for player deffensed !"),
+                    HttpStatus.BAD_REQUEST);
+
+        if (!verifyAvailableHeroService.verifyAvailableHeroService(adverseHero))
+            return new ResponseEntity<>(new MessageResponse(
+                    "The Hero deffensed can no longer make a fight by what it has already used in another and lost the fight. !"),
                     HttpStatus.BAD_REQUEST);
 
         if (!verifyStatusCombatService.verifyStatusCombat(currentHero, adverseHero))

@@ -14,11 +14,13 @@ import esgi.infra.repository.HeroRepository;
 import esgi.infra.service.heros.CreateHeroService;
 import esgi.infra.service.heros.FindAllAvailableHeroService;
 import esgi.infra.service.heros.GetByIdHeroServiceService;
+import esgi.infra.service.heros.VerifyAvailableHeroService;
 
 @Service
-public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHeroService, GetByIdHeroServiceService {
+public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHeroService, GetByIdHeroServiceService,
+        VerifyAvailableHeroService {
 
-    private HeroRepository heroRepository;
+    private final HeroRepository heroRepository;
 
     @Autowired
     public HerosServiceImpl(HeroRepository heroRepository) {
@@ -107,6 +109,12 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
         }
 
         return hero;
+    }
+
+    @Override
+    public Boolean verifyAvailableHeroService(Hero hero) {
+
+        return heroRepository.findByIdAndAvailableTrue(hero.getId()).isPresent();
     }
 
 }

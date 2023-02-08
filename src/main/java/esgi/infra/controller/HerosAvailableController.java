@@ -12,7 +12,7 @@ import esgi.infra.service.heros.FindAllAvailableHeroService;
 @Controller
 @RequestMapping("/api/hero")
 public class HerosAvailableController {
-    private FindAllAvailableHeroService herosService;
+    private final FindAllAvailableHeroService herosService;
 
     public HerosAvailableController(FindAllAvailableHeroService herosService) {
         this.herosService = herosService;

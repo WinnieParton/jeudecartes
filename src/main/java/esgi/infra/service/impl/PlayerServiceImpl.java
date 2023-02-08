@@ -28,9 +28,9 @@ public class PlayerServiceImpl
         implements CreatePlayerService, SearchPlayersService,
         ViewPlayerDeckService, IsPseudoPlayerExistService, GetByIdPlayerService, VerifyHeroInDeckPlayerService {
 
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
 
-    private DeckRepository deckRepository;
+    private final DeckRepository deckRepository;
 
     public PlayerServiceImpl(PlayerRepository playerRepository, DeckRepository deckRepository) {
         this.playerRepository = playerRepository;
