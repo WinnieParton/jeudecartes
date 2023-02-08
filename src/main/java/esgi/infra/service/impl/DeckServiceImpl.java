@@ -1,25 +1,24 @@
 package esgi.infra.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import esgi.domain.Hero;
-import esgi.domain.PackHeroType;
-import esgi.domain.Player;
-import esgi.domain.RaretyType;
+import esgi.domain.HeroDomain;
+import esgi.domain.PackHeroTypeDomain;
+import esgi.domain.PlayerDomain;
+import esgi.domain.RaretyTypeDomain;
 import esgi.infra.entity.DeckEntity;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.entity.PlayerEntity;
 import esgi.infra.repository.DeckRepository;
 import esgi.infra.repository.HeroRepository;
 import esgi.infra.repository.PlayerRepository;
-import esgi.infra.service.desk.OpenPackService;
-import esgi.infra.service.desk.VerifyJetonService;
+import esgi.infra.service.OpenPackService;
+import esgi.infra.service.VerifyJetonService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -38,9 +37,9 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
     }
 
     @Override
-    public Boolean verifJetonByPackPlayer(PackHeroType packHero, Player player) {
-        if (packHero.equals(PackHeroType.argent) && player.getJeton() >= 1 ||
-                packHero.equals(PackHeroType.diamant) && player.getJeton() >= 2)
+    public Boolean verifJetonByPackPlayer(PackHeroTypeDomain packHero, PlayerDomain player) {
+        if (packHero.equals(PackHeroTypeDomain.argent) && player.getJeton() >= 1 ||
+                packHero.equals(PackHeroTypeDomain.diamant) && player.getJeton() >= 2)
             return Boolean.TRUE;
         else
             return Boolean.FALSE;
@@ -48,22 +47,22 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
     }
 
     @Override
-    public List<Hero> openPack(Player player, PackHeroType packType) {
+    public List<HeroDomain> openPack(PlayerDomain player, PackHeroTypeDomain packType) {
         int tokenCost;
         int numberOfHeros;
         Map<String, Double> rarityProbability;
         // définir les caractéristiques du pack en fonction de son type
-        if (PackHeroType.argent.equals(packType)) {
+        if (PackHeroTypeDomain.argent.equals(packType)) {
             tokenCost = 1;
             numberOfHeros = 3;
-            rarityProbability = Map.of(RaretyType.LEGENDARY.name(), 0.05, RaretyType.RARE.name(), 0.2,
-                    RaretyType.COMMON.name(), 0.75);
+            rarityProbability = Map.of(RaretyTypeDomain.LEGENDARY.name(), 0.05, RaretyTypeDomain.RARE.name(), 0.2,
+                    RaretyTypeDomain.COMMON.name(), 0.75);
             player.setNbrTiragePackArgent(player.getNbrTiragePackArgent() + 1);
-        } else if (PackHeroType.diamant.equals(packType)) {
+        } else if (PackHeroTypeDomain.diamant.equals(packType)) {
             tokenCost = 2;
             numberOfHeros = 5;
-            rarityProbability = Map.of(RaretyType.LEGENDARY.name(), 0.15, RaretyType.RARE.name(), 0.35,
-                    RaretyType.COMMON.name(), 0.5);
+            rarityProbability = Map.of(RaretyTypeDomain.LEGENDARY.name(), 0.15, RaretyTypeDomain.RARE.name(), 0.35,
+                    RaretyTypeDomain.COMMON.name(), 0.5);
             player.setNbrTiragePackDiament(player.getNbrTiragePackDiament() + 1);
 
         } else {
@@ -78,7 +77,7 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
 
         var h = new ArrayList<HeroEntity>();
 
-        for (Hero her : player.getDeck().getHeros()) {
+        for (HeroDomain her : player.getDeck().getHeros()) {
             h.add(new HeroEntity(her.getId(), her.getName(),
                     her.getNbLifePoints(), her.getExperience(), her.getPower(),
                     her.getArmor(), her.getSpeciality(), her.getRarity(), her.getLevel(),
@@ -101,10 +100,10 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         playerRepository.save(play);
         deckRepository.save(play.getDeck());
 
-        var heroL = new ArrayList<Hero>();
+        var heroL = new ArrayList<HeroDomain>();
 
         for (HeroEntity heroEntity : heros) {
-            var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
+            var hero = new HeroDomain(heroEntity.getId(), heroEntity.getName(),
               
             heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                     heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
@@ -121,13 +120,13 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         Random random = new Random();
         for (int i = 0; i < numberOfHeros; i++) {
             double probability = random.nextDouble();
-            RaretyType rarity;
-            if (probability < rarityProbability.get(RaretyType.LEGENDARY.name())) {
-                rarity = RaretyType.LEGENDARY;
-            } else if (probability < rarityProbability.get(RaretyType.RARE.name())) {
-                rarity = RaretyType.RARE;
+            RaretyTypeDomain rarity;
+            if (probability < rarityProbability.get(RaretyTypeDomain.LEGENDARY.name())) {
+                rarity = RaretyTypeDomain.LEGENDARY;
+            } else if (probability < rarityProbability.get(RaretyTypeDomain.RARE.name())) {
+                rarity = RaretyTypeDomain.RARE;
             } else {
-                rarity = RaretyType.COMMON;
+                rarity = RaretyTypeDomain.COMMON;
             }
             // sélectionner un héros aléatoire de la rareté choisie
             List<HeroEntity> heroes = heroRepository.findByRarityAndStatusTrue(rarity);

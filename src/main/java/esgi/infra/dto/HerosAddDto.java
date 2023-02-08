@@ -3,21 +3,21 @@ package esgi.infra.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import esgi.domain.RaretyType;
-import esgi.domain.SpecialityType;
+import esgi.domain.RaretyTypeDomain;
+import esgi.domain.SpecialityTypeDomain;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class HerosAddDto {
-    @NotBlank
+    @NotBlank(message = "Name can not blank")
     @Size(min = 3, max = 50)
     private String name;
 
     @NotBlank
-    private SpecialityType speciality;
+    private SpecialityTypeDomain speciality;
 
     @NotBlank
-    private RaretyType rarety;
+    private RaretyTypeDomain rarety;
 }

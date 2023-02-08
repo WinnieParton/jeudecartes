@@ -1,5 +1,6 @@
 package esgi.infra.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -30,7 +31,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "players")
-public class PlayerEntity {
+public class PlayerEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

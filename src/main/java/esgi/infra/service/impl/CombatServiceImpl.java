@@ -7,19 +7,19 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import esgi.domain.Combat;
-import esgi.domain.Hero;
-import esgi.domain.SpecialityType;
+import esgi.domain.CombatDomain;
+import esgi.domain.HeroDomain;
+import esgi.domain.SpecialityTypeDomain;
 import esgi.infra.entity.CombatEntity;
 import esgi.infra.entity.CombatHistoryEntity;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.CombatHistoryRepository;
 import esgi.infra.repository.CombatRepository;
 import esgi.infra.repository.HeroRepository;
-import esgi.infra.service.combat.EngageCombatService;
-import esgi.infra.service.combat.FindByHeroCombatService;
-import esgi.infra.service.combat.RetrieveHeroCombatsService;
-import esgi.infra.service.combat.VerifyStatusCombatService;
+import esgi.infra.service.EngageCombatService;
+import esgi.infra.service.FindByHeroCombatService;
+import esgi.infra.service.RetrieveHeroCombatsService;
+import esgi.infra.service.VerifyStatusCombatService;
 
 @Service
 @Transactional
@@ -45,14 +45,14 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
 
      public int calculateDamage(HeroEntity attacker, HeroEntity defender) {
           int damage = attacker.getPower() - defender.getArmor();
-          if (defender.getSpeciality().equals(SpecialityType.MAGE)
-                    && attacker.getSpeciality().equals(SpecialityType.TANK)) {
+          if (defender.getSpeciality().equals(SpecialityTypeDomain.MAGE)
+                    && attacker.getSpeciality().equals(SpecialityTypeDomain.TANK)) {
                damage += 20;
-          } else if (defender.getSpeciality().equals(SpecialityType.TANK)
-                    && attacker.getSpeciality().equals(SpecialityType.ASSASSIN)) {
+          } else if (defender.getSpeciality().equals(SpecialityTypeDomain.TANK)
+                    && attacker.getSpeciality().equals(SpecialityTypeDomain.ASSASSIN)) {
                damage += 30;
-          } else if (defender.getSpeciality().equals(SpecialityType.ASSASSIN)
-                    && attacker.getSpeciality().equals(SpecialityType.MAGE)) {
+          } else if (defender.getSpeciality().equals(SpecialityTypeDomain.ASSASSIN)
+                    && attacker.getSpeciality().equals(SpecialityTypeDomain.MAGE)) {
                damage += 25;
           }
           return damage;
@@ -82,7 +82,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
      }
 
      @Override
-     public String engageCombat(Hero atHero, Hero defHero) {
+     public String engageCombat(HeroDomain atHero, HeroDomain defHero) {
 
           var result = "";
           var comb = new CombatEntity(heroRepository.findById(atHero.getId())
@@ -148,8 +148,8 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
      }
 
      @Override
-     public List<Combat> retrieveHeroCombats(Hero hero) {
-          var combatL = new ArrayList<Combat>();
+     public List<CombatDomain> retrieveHeroCombats(HeroDomain hero) {
+          var combatL = new ArrayList<CombatDomain>();
           HeroEntity heroEntity = new HeroEntity(hero.getId(), hero.getName(), hero.getNbLifePoints(),
                     hero.getExperience(), hero.getPower(), hero.getArmor(), hero.getSpeciality(),
                     hero.getRarity(), hero.getLevel(), hero.isAvailable(), hero.isStatus(),
@@ -157,7 +157,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
 
           for (CombatEntity combatEntity : combatRepository.findByAttackingHeroOrDefendingHero(heroEntity,
                     heroEntity)) {
-               Hero attackerHero = new Hero(combatEntity.getAttackingHero().getId(),
+               HeroDomain attackerHero = new HeroDomain(combatEntity.getAttackingHero().getId(),
                          combatEntity.getAttackingHero().getName(),
                          combatEntity.getAttackingHero().getNbLifePoints(),
                          combatEntity.getAttackingHero().getExperience(),
@@ -171,7 +171,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          combatEntity.getAttackingHero().getCreatedAt(),
                          combatEntity.getAttackingHero().getUpdatedAt());
 
-               Hero defenderHero = new Hero(combatEntity.getDefendingHero().getId(),
+               HeroDomain defenderHero = new HeroDomain(combatEntity.getDefendingHero().getId(),
                          combatEntity.getDefendingHero().getName(),
                          combatEntity.getDefendingHero().getNbLifePoints(),
                          combatEntity.getDefendingHero().getExperience(),
@@ -184,7 +184,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          combatEntity.getDefendingHero().isStatus(),
                          combatEntity.getDefendingHero().getCreatedAt(),
                          combatEntity.getDefendingHero().getUpdatedAt());
-               combatL.add(new Combat(combatEntity.getId(), attackerHero, defenderHero,
+               combatL.add(new CombatDomain(combatEntity.getId(), attackerHero, defenderHero,
                          combatEntity.getResult(),
                          combatEntity.getCreatedAt(), combatEntity.getUpdatedAt()));
           }
@@ -193,7 +193,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
      }
 
      @Override
-     public Boolean verifyStatusCombat(Hero atHero, Hero defHero) {
+     public Boolean verifyStatusCombat(HeroDomain atHero, HeroDomain defHero) {
 
           HeroEntity attackerHero = heroRepository.findById(atHero.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Hero attacked not found !"));
@@ -216,7 +216,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
      }
 
      @Override
-     public Optional<Combat> findByHeroCombat(Hero atHero, Hero defHero) {
+     public Optional<CombatDomain> findByHeroCombat(HeroDomain atHero, HeroDomain defHero) {
 
           HeroEntity attackerHero = heroRepository.findById(atHero.getId())
                     .orElseThrow(() -> new IllegalArgumentException(
@@ -230,7 +230,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                     attackerHero, defenderHero);
 
           if (comb1.isPresent()) {
-               var at1 = new Hero(comb1.get().getAttackingHero().getId(),
+               var at1 = new HeroDomain(comb1.get().getAttackingHero().getId(),
                          comb1.get().getAttackingHero().getName(),
                          comb1.get().getAttackingHero().getNbLifePoints(),
                          comb1.get().getAttackingHero().getExperience(),
@@ -244,7 +244,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          comb1.get().getAttackingHero().getCreatedAt(),
                          comb1.get().getAttackingHero().getUpdatedAt());
 
-               var at2 = new Hero(comb1.get().getDefendingHero().getId(),
+               var at2 = new HeroDomain(comb1.get().getDefendingHero().getId(),
                          comb1.get().getDefendingHero().getName(),
                          comb1.get().getDefendingHero().getNbLifePoints(),
                          comb1.get().getDefendingHero().getExperience(),
@@ -258,7 +258,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          comb1.get().getDefendingHero().getCreatedAt(),
                          comb1.get().getDefendingHero().getUpdatedAt());
 
-               return Optional.of(new Combat(comb1.get().getId(), at1, at2,
+               return Optional.of(new CombatDomain(comb1.get().getId(), at1, at2,
                          comb1.get().getResult(), comb1.get().getCreatedAt(),
                          comb1.get().getUpdatedAt()));
           }
@@ -268,7 +268,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                     attackerHero);
 
           if (comb2.isPresent()) {
-               var at1 = new Hero(comb2.get().getAttackingHero().getId(),
+               var at1 = new HeroDomain(comb2.get().getAttackingHero().getId(),
                          comb2.get().getAttackingHero().getName(),
                          comb2.get().getAttackingHero().getNbLifePoints(),
                          comb2.get().getAttackingHero().getExperience(),
@@ -282,7 +282,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          comb2.get().getAttackingHero().getCreatedAt(),
                          comb2.get().getAttackingHero().getUpdatedAt());
 
-               var at2 = new Hero(comb2.get().getDefendingHero().getId(),
+               var at2 = new HeroDomain(comb2.get().getDefendingHero().getId(),
                          comb2.get().getDefendingHero().getName(),
                          comb2.get().getDefendingHero().getNbLifePoints(),
                          comb2.get().getDefendingHero().getExperience(),
@@ -296,7 +296,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
                          comb2.get().getDefendingHero().getCreatedAt(),
                          comb2.get().getDefendingHero().getUpdatedAt());
 
-               return Optional.of(new Combat(comb2.get().getId(), at1, at2,
+               return Optional.of(new CombatDomain(comb2.get().getId(), at1, at2,
                          comb2.get().getResult(), comb2.get().getCreatedAt(),
                          comb2.get().getUpdatedAt()));
           } else

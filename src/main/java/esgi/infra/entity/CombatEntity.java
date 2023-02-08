@@ -1,5 +1,6 @@
 package esgi.infra.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "combats")
-public class CombatEntity {
+public class CombatEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

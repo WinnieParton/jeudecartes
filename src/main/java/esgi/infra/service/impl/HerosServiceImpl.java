@@ -6,15 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import esgi.domain.Hero;
-import esgi.domain.RaretyType;
-import esgi.domain.SpecialityType;
+import esgi.domain.HeroDomain;
+import esgi.domain.RaretyTypeDomain;
+import esgi.domain.SpecialityTypeDomain;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.HeroRepository;
-import esgi.infra.service.heros.CreateHeroService;
-import esgi.infra.service.heros.FindAllAvailableHeroService;
-import esgi.infra.service.heros.GetByIdHeroServiceService;
-import esgi.infra.service.heros.VerifyAvailableHeroService;
+import esgi.infra.service.CreateHeroService;
+import esgi.infra.service.FindAllAvailableHeroService;
+import esgi.infra.service.GetByIdHeroServiceService;
+import esgi.infra.service.VerifyAvailableHeroService;
 
 @Service
 public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHeroService, GetByIdHeroServiceService,
@@ -28,10 +28,10 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
     }
 
     @Override
-    public List<Hero> findAllHerosAvailable() {
-        var heroL = new ArrayList<Hero>();
+    public List<HeroDomain> findAllHerosAvailable() {
+        var heroL = new ArrayList<HeroDomain>();
         for (HeroEntity heroEntity : heroRepository.findByStatusTrue()) {
-            var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
+            var hero = new HeroDomain(heroEntity.getId(), heroEntity.getName(),
                     heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                     heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
                     heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
@@ -43,12 +43,12 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
     }
 
     @Override
-    public Hero createHero(String name, SpecialityType speciality, RaretyType rarity) {
+    public HeroDomain createHero(String name, SpecialityTypeDomain speciality, RaretyTypeDomain rarity) {
         HeroEntity heroEntity = new HeroEntity(name, speciality, rarity);
         calculateBaseStatistics(heroEntity);
         heroEntity = heroRepository.save(heroEntity);
 
-        return new Hero(heroEntity.getId(), heroEntity.getName(),
+        return new HeroDomain(heroEntity.getId(), heroEntity.getName(),
                 heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                 heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
                 heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
@@ -56,11 +56,11 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
     }
 
     @Override
-    public Hero getById(Long id) {
+    public HeroDomain getById(Long id) {
         HeroEntity heroEntity = heroRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Hero with id " + id + " not found !"));
 
-        return new Hero(heroEntity.getId(), heroEntity.getName(),
+        return new HeroDomain(heroEntity.getId(), heroEntity.getName(),
                 heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                 heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
                 heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
@@ -68,17 +68,17 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
 
     }
 
-    public HeroEntity calculateBaseStatistics(HeroEntity hero) {
+    public void calculateBaseStatistics(HeroEntity hero) {
         // initial base statistics for each speciality
-        if (hero.getSpeciality().equals(SpecialityType.TANK)) {
+        if (hero.getSpeciality().equals(SpecialityTypeDomain.TANK)) {
             hero.setNbLifePoints(1000);
             hero.setPower(100);
             hero.setArmor(20);
-        } else if (hero.getSpeciality().equals(SpecialityType.ASSASSIN)) {
+        } else if (hero.getSpeciality().equals(SpecialityTypeDomain.ASSASSIN)) {
             hero.setNbLifePoints(800);
             hero.setPower(200);
             hero.setArmor(5);
-        } else if (hero.getSpeciality().equals(SpecialityType.MAGE)) {
+        } else if (hero.getSpeciality().equals(SpecialityTypeDomain.MAGE)) {
             hero.setNbLifePoints(700);
             hero.setPower(150);
             hero.setArmor(10);
@@ -90,16 +90,16 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
 
         var armor = hero.getArmor();
         // apply rarity bonuses
-        if (hero.getRarity().equals(RaretyType.COMMON)) {
+        if (hero.getRarity().equals(RaretyTypeDomain.COMMON)) {
             // no bonus
-        } else if (hero.getRarity().equals(RaretyType.RARE)) {
+        } else if (hero.getRarity().equals(RaretyTypeDomain.RARE)) {
             nbLifePoints += hero.getNbLifePoints() * 0.1;
             hero.setNbLifePoints(nbLifePoints);
             power += hero.getPower() * 0.1;
             hero.setPower(power);
             armor += hero.getArmor() * 0.1;
             hero.setArmor(armor);
-        } else if (hero.getRarity().equals(RaretyType.LEGENDARY)) {
+        } else if (hero.getRarity().equals(RaretyTypeDomain.LEGENDARY)) {
             nbLifePoints += hero.getNbLifePoints() * 0.2;
             hero.setNbLifePoints(nbLifePoints);
             power += hero.getPower() * 0.2;
@@ -108,11 +108,10 @@ public class HerosServiceImpl implements CreateHeroService, FindAllAvailableHero
             hero.setArmor(armor);
         }
 
-        return hero;
     }
 
     @Override
-    public Boolean verifyAvailableHeroService(Hero hero) {
+    public Boolean verifyAvailableHeroService(HeroDomain hero) {
 
         return heroRepository.findByIdAndAvailableTrue(hero.getId()).isPresent();
     }

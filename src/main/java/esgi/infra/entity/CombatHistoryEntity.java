@@ -1,5 +1,6 @@
 package esgi.infra.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "combat_histories")
-public class CombatHistoryEntity {
+public class CombatHistoryEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,5 +45,5 @@ public class CombatHistoryEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
-    
+
 }

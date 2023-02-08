@@ -1,5 +1,6 @@
 package esgi.infra.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "decks")
-public class DeckEntity {
+public class DeckEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,10 +42,6 @@ public class DeckEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
-
-    public void addHero(HeroEntity hero) {
-        this.heros.add(hero);
-    }
 
     public void addAll(List<HeroEntity> heros) {
         this.heros.addAll(heros);

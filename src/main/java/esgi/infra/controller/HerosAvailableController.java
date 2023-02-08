@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import esgi.infra.response.MessageResponse;
-import esgi.infra.service.heros.FindAllAvailableHeroService;
+import esgi.infra.service.FindAllAvailableHeroService;
 
 @Controller
 @RequestMapping("/api/hero")

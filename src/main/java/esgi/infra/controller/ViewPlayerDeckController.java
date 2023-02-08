@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import esgi.domain.Player;
+import esgi.domain.PlayerDomain;
 import esgi.infra.response.MessageResponse;
-import esgi.infra.service.player.GetByIdPlayerService;
-import esgi.infra.service.player.ViewPlayerDeckService;
+import esgi.infra.service.GetByIdPlayerService;
+import esgi.infra.service.ViewPlayerDeckService;
 
 @Controller
 @RequestMapping("/api/player")
@@ -28,7 +28,7 @@ public class ViewPlayerDeckController {
     @GetMapping(value = "/deck/{idplayer}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> viewPlayerDeck(@PathVariable(value = "idplayer") Long idplayer) {
 
-        Player j = getByIdPlayerService.getById(idplayer);
+        PlayerDomain j = getByIdPlayerService.getById(idplayer);
 
         return new ResponseEntity<>(new MessageResponse("Action succes !",
                 viewPlayerDeckService.viewPlayerDeck(j)),

@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import esgi.domain.RaretyType;
-import esgi.domain.SpecialityType;
+import esgi.domain.RaretyTypeDomain;
+import esgi.domain.SpecialityTypeDomain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,10 +56,10 @@ public class HeroEntity implements Serializable {
     private int armor;
 
     @Column(nullable = false)
-    private SpecialityType speciality;
+    private SpecialityTypeDomain speciality;
 
     @Column(nullable = false)
-    private RaretyType rarity;
+    private RaretyTypeDomain rarity;
 
     private Integer level = 1;
 
@@ -75,7 +75,7 @@ public class HeroEntity implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public HeroEntity(@NotBlank @Size(min = 3, max = 50) String name, SpecialityType speciality, RaretyType rarity) {
+    public HeroEntity(@NotBlank @Size(min = 3, max = 50) String name, SpecialityTypeDomain speciality, RaretyTypeDomain rarity) {
         this.name = name;
         this.speciality = speciality;
         this.rarity = rarity;
