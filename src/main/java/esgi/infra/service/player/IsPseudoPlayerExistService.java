@@ -1,7 +1,9 @@
 package esgi.infra.service.player;
 
+import java.util.Optional;
+
 import esgi.domain.Player;
 
 public interface IsPseudoPlayerExistService {
-   Player findByPseudo(String pseudo);
+   Optional<Player> findByPseudo(String pseudo);
 }

@@ -2,6 +2,7 @@ package esgi.infra.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,6 @@ public class PlayerServiceImpl
         var player = new ArrayList<Player>();
         for (PlayerEntity playEntity : playerRepository.findAll()) {
             var heroL = new ArrayList<Hero>();
-            System.out.println("ffffffffff   " + playEntity.getDeck().getHeros().size());
             for (HeroEntity heroEntity : playEntity.getDeck().getHeros()) {
                 var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
                         heroEntity.getNbLifePoints(), heroEntity.getExperience(),
@@ -82,32 +82,33 @@ public class PlayerServiceImpl
     }
 
     @Override
-    public Player findByPseudo(String pseudo) {
+    public Optional<Player> findByPseudo(String pseudo) {
 
-        PlayerEntity playEntity = playerRepository.findByPseudo(pseudo)
-                .orElseThrow(() -> new IllegalArgumentException("Player with pseudo " + pseudo + " not found !"));
+        Optional<PlayerEntity> playEntity = playerRepository.findByPseudo(pseudo);
 
-        var heroL = new ArrayList<Hero>();
-        for (HeroEntity heroEntity : playEntity.getDeck().getHeros()) {
-            var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
-                    heroEntity.getNbLifePoints(), heroEntity.getExperience(),
-                    heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
-                    heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
-                    heroEntity.isStatus(), heroEntity.getCreatedAt(), heroEntity.getUpdatedAt());
+        if (!playEntity.isEmpty()) {
+            var heroL = new ArrayList<Hero>();
+            for (HeroEntity heroEntity : playEntity.get().getDeck().getHeros()) {
+                var hero = new Hero(heroEntity.getId(), heroEntity.getName(),
+                        heroEntity.getNbLifePoints(), heroEntity.getExperience(),
+                        heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
+                        heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
+                        heroEntity.isStatus(), heroEntity.getCreatedAt(), heroEntity.getUpdatedAt());
 
-            heroL.add(hero);
-        }
+                heroL.add(hero);
+            }
 
-        var deck = new Deck(playEntity.getDeck().getId(), heroL, playEntity.getDeck().getCreatedAt(),
-                playEntity.getDeck().getUpdatedAt());
+            var deck = new Deck(playEntity.get().getDeck().getId(), heroL, playEntity.get().getDeck().getCreatedAt(),
+                    playEntity.get().getDeck().getUpdatedAt());
 
-        var play = new Player(playEntity.getId(), playEntity.getPseudo(), playEntity.getJeton(),
-                deck, playEntity.getNbrTirage(), playEntity.getNbrTiragePackArgent(),
-                playEntity.getNbrTiragePackDiament(),
-                playEntity.getCreatedAt(), playEntity.getUpdatedAt());
+            var play = new Player(playEntity.get().getId(), playEntity.get().getPseudo(),
+                    playEntity.get().getJeton(), deck, playEntity.get().getNbrTirage(),
+                    playEntity.get().getNbrTiragePackArgent(), playEntity.get().getNbrTiragePackDiament(),
+                    playEntity.get().getCreatedAt(), playEntity.get().getUpdatedAt());
 
-        return play;
-
+            return Optional.of(play);
+        } else
+            return Optional.empty();
     }
 
     @Override

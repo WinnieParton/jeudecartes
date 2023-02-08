@@ -118,6 +118,8 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
             combatRepository.save(combat);
 
             addExperiencePoints(attackerHero, 1);
+            defenderHero.setAvailable(false);
+            heroRepository.save(defenderHero);
             return "Hero attacked " + atHero.getId() + " won the combat";
         } else {
             System.out.println("Hero defended " + defHero.getId() + " won the combat");
@@ -129,7 +131,8 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
             combatRepository.save(combat);
 
             addExperiencePoints(defenderHero, 1);
-
+            attackerHero.setAvailable(false);
+            heroRepository.save(attackerHero);
             return "Hero defended " + defHero.getId() + " won the combat";
         }
 
