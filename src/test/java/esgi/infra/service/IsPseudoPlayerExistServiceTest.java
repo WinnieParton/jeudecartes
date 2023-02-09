@@ -1,24 +1,21 @@
 package esgi.infra.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import esgi.domain.PlayerDomain;
+import esgi.infra.entity.DeckEntity;
+import esgi.infra.entity.PlayerEntity;
+import esgi.infra.repository.PlayerRepository;
+import esgi.infra.service.impl.PlayerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import esgi.domain.PlayerDomain;
-import esgi.infra.entity.PlayerEntity;
-import esgi.infra.repository.PlayerRepository;
-import esgi.infra.service.impl.PlayerServiceImpl;
+import java.util.Collections;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class IsPseudoPlayerExistServiceTest {
@@ -30,17 +27,30 @@ public class IsPseudoPlayerExistServiceTest {
 
     @Test
     public void testFindByPseudo_PlayerExists() {
-        // given
-        PlayerEntity player = new PlayerEntity("John Doe");
-        when(playerRepository.findByPseudo("John Doe")).thenReturn(Optional.of(player));
+        // Arrange
+        String pseudo = "player1";
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setId(1L);
+        playerEntity.setPseudo(pseudo);
+        playerEntity.setJeton(100);
+        Optional<PlayerEntity> playerEntityOptional = Optional.of(playerEntity);
 
-        // when
-        Optional<PlayerDomain> foundPlayer = playerServiceImpl.findByPseudo("John Doe");
+        DeckEntity deckEntity = new DeckEntity();
+        deckEntity.setId(1L);
+        deckEntity.setHeros(Collections.emptyList());
+        playerEntity.setDeck(deckEntity);
 
-        // then
-        assertTrue(foundPlayer.isPresent());
-        assertEquals(player, foundPlayer.get());
-        verify(playerRepository, times(1)).findByPseudo("John Doe");
+        when(playerRepository.findByPseudo(pseudo)).thenReturn(playerEntityOptional);
+
+        // Act
+        Optional<PlayerDomain> playerDomainOptional = playerServiceImpl.findByPseudo(pseudo);
+
+        // Assert
+        assertTrue(playerDomainOptional.isPresent());
+        PlayerDomain playerDomain = playerDomainOptional.get();
+        assertEquals(playerDomain.getId(), playerEntity.getId());
+        assertEquals(playerDomain.getPseudo(), playerEntity.getPseudo());
+        assertEquals(playerDomain.getJeton(), playerEntity.getJeton());
     }
 
     @Test

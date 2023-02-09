@@ -1,12 +1,22 @@
 package esgi.infra.controller;
 
+import esgi.domain.PlayerDomain;
+import esgi.infra.dto.PlayerAddDto;
+import esgi.infra.response.MessageResponse;
+import esgi.infra.service.CreatePlayerService;
+import esgi.infra.service.IsPseudoPlayerExistService;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import esgi.infra.service.CreatePlayerService;
-import esgi.infra.service.IsPseudoPlayerExistService;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerAuthControllerTest {
@@ -18,54 +28,49 @@ public class PlayerAuthControllerTest {
     @InjectMocks
     private PlayerAuthController playerAuthController;
 
-    // @Test
-    // public void testAddPlayer_validData_returnsSuccess() {
-    //     // create a mock player object to return from the getPlayerByPseudoService
-    //     Player player = new Player();
-    //     player.setPseudo("testplayer");
-    //     when(getPlayerByPseudoService.findByPseudo("testplayer")).thenReturn(Optional.empty());
-    //     // create a mock player object to return from the addPlayerService
-    //     Player newPlayer = new Player();
-    //     newPlayer.setPseudo("testplayer");
-    //     when(addPlayerService.createPlayer("testplayer")).thenReturn(newPlayer);
+    @Test
+    public void testAddPlayer_PlayerExists() {
+        PlayerAddDto playerDto = new PlayerAddDto();
+        playerDto.setPseudo("existingPseudo");
 
-    //     // create a request body with valid data
-    //     PlayerAddDto playerDto = new PlayerAddDto();
-    //     playerDto.setPseudo("testplayer");
-    //     // create a mock errors object with no errors
-    //     Errors errors = mock(Errors.class);
-    //     when(errors.hasErrors()).thenReturn(false);
+        PlayerDomain existingPlayer = new PlayerDomain();
+        existingPlayer.setPseudo("existingPseudo");
 
-    //     // call the addPlayer method
-    //     ResponseEntity<?> result = playerAuthController.addPlayer(playerDto, errors);
+        Optional<PlayerDomain> playerOptional = Optional.of(existingPlayer);
 
-    //     // assert that the response has a status of CREATED
-    //     assertEquals(HttpStatus.CREATED, result.getStatusCode());
-    //     // assert that the response body has the correct message and data
-    //     MessageResponse responseBody = (MessageResponse) result.getBody();
-    //     assertEquals("Action succes !", responseBody.getMap().get("message"));
-    //     assertEquals(newPlayer, responseBody.getMap().get("data"));
-    // }
+        when(getPlayerByPseudoService.findByPseudo(playerDto.getPseudo())).thenReturn(playerOptional);
 
-    // @Test
-    // public void testAddPlayer_existingPseudo_returnsConflict() {
-    //     // setup
-    //     PlayerAddDto playerDto = new PlayerAddDto();
-    //     playerDto.setPseudo("JohnDoe");
-    //     Errors errors = new BeanPropertyBindingResult(playerDto, "playerDto");
+        ResponseEntity<?> result = playerAuthController.addPlayer(playerDto);
 
-    //     Optional<Player> existingPlayer = Optional.of(new Player("JohnDoe"));
+        assertEquals(HttpStatus.FOUND, result.getStatusCode());
+        assertEquals("Pseudo exist already !", ((MessageResponse) result.getBody()).getMap().get("message"));
+        assertEquals(playerOptional, ((MessageResponse) result.getBody()).getMap().get("data"));
 
-    //     when(getPlayerByPseudoService.findByPseudo(playerDto.getPseudo())).thenReturn(existingPlayer);
+        verify(getPlayerByPseudoService, times(1)).findByPseudo(playerDto.getPseudo());
+        verify(addPlayerService, never()).createPlayer(playerDto.getPseudo());
+    }
 
-    //     // when
-    //     ResponseEntity<?> result = playerAuthController.addPlayer(playerDto, errors);
+    @Test
+    public void testAddPlayer_Success() {
+        PlayerAddDto playerDto = new PlayerAddDto();
+        playerDto.setPseudo("newPseudo");
 
-    //     // then
-    //     assertEquals(HttpStatus.FOUND, result.getStatusCode());
-    //     assertEquals("Pseudo exist already !", ((MessageResponse) result.getBody()).getMap().get("message"));
-    //     assertEquals(existingPlayer.get(), ((MessageResponse) result.getBody()).getMap().get("data"));
-    //     verify(getPlayerByPseudoService, times(1)).findByPseudo(playerDto.getPseudo());
-    //     verify(addPlayerService, never()).createPlayer(playerDto.getPseudo());
-    // }
+        Optional<PlayerDomain> playerOptional = Optional.empty();
+
+        when(getPlayerByPseudoService.findByPseudo(playerDto.getPseudo())).thenReturn(playerOptional);
+
+        PlayerDomain createdPlayer = new PlayerDomain();
+        createdPlayer.setPseudo("newPseudo");
+
+        when(addPlayerService.createPlayer(playerDto.getPseudo())).thenReturn(createdPlayer);
+
+        ResponseEntity<?> result = playerAuthController.addPlayer(playerDto);
+
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals("Action succes !", ((MessageResponse) result.getBody()).getMap().get("message"));
+        assertEquals(createdPlayer, ((MessageResponse) result.getBody()).getMap().get("data"));
+
+        verify(getPlayerByPseudoService, times(1)).findByPseudo(playerDto.getPseudo());
+        verify(addPlayerService, times(1)).createPlayer(playerDto.getPseudo());
+    }
 }

@@ -1,10 +1,11 @@
 package esgi.infra.dto;
 
-import javax.validation.constraints.NotBlank;
-
 import esgi.domain.PackHeroTypeDomain;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -12,6 +13,6 @@ public class DeskAddPlayerDto {
     @NotBlank
     private PackHeroTypeDomain pack;
 
-    @NotBlank
+    @NotNull
     private Long player;
 }

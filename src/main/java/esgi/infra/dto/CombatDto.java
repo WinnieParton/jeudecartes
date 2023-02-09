@@ -1,22 +1,22 @@
 package esgi.infra.dto;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class CombatDto {
-    @NotBlank
+    @NotNull
     private Long attackerPlayer;
 
-    @NotBlank
+    @NotNull
     private Long defenderPlayer;
 
-    @NotBlank
+    @NotNull
     private Long attackerHero;
 
-    @NotBlank
+    @NotNull
     private Long defenderHero;
 }

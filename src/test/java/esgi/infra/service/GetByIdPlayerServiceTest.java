@@ -1,19 +1,5 @@
 package esgi.infra.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import esgi.domain.PlayerDomain;
 import esgi.domain.RaretyTypeDomain;
 import esgi.domain.SpecialityTypeDomain;
@@ -22,6 +8,19 @@ import esgi.infra.entity.HeroEntity;
 import esgi.infra.entity.PlayerEntity;
 import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.impl.PlayerServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GetByIdPlayerServiceTest {
@@ -76,7 +75,7 @@ public class GetByIdPlayerServiceTest {
         assertEquals(20, player.getDeck().getHeros().get(0).getExperience());
         assertEquals(30, player.getDeck().getHeros().get(0).getPower());
         assertEquals(40, player.getDeck().getHeros().get(0).getArmor());
-        assertEquals("speciality", player.getDeck().getHeros().get(0).getSpeciality());
+        assertEquals(SpecialityTypeDomain.ASSASSIN, player.getDeck().getHeros().get(0).getSpeciality());
         assertEquals(RaretyTypeDomain.COMMON, player.getDeck().getHeros().get(0).getRarity());
         assertEquals(1, player.getDeck().getHeros().get(0).getLevel());
         assertTrue(player.getDeck().getHeros().get(0).isAvailable());

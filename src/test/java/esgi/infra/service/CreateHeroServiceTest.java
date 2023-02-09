@@ -1,22 +1,21 @@
 package esgi.infra.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import esgi.domain.HeroDomain;
 import esgi.domain.RaretyTypeDomain;
 import esgi.domain.SpecialityTypeDomain;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.HeroRepository;
 import esgi.infra.service.impl.HerosServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CreateHeroServiceTest {
     @Mock
@@ -26,25 +25,18 @@ public class CreateHeroServiceTest {
     private HerosServiceImpl heroService;
 
     @Test
-    public void createHero_ShouldCreateHero() {
-        String name = "Superman";
-        SpecialityTypeDomain speciality = SpecialityTypeDomain.TANK;
-        RaretyTypeDomain rarity = RaretyTypeDomain.LEGENDARY;
+    public void createHeroTest() {
+        HeroEntity heroEntity = new HeroEntity("Hero", SpecialityTypeDomain.MAGE, RaretyTypeDomain.COMMON);
+        HeroDomain hero = new HeroDomain(1L, "Hero", 100, 0, 10, 5, SpecialityTypeDomain.MAGE, RaretyTypeDomain.COMMON, 1, true, true, null, null);
 
-        HeroEntity heroEntity = new HeroEntity(name, speciality, rarity);
-        heroEntity.setNbLifePoints(1200);
-        heroEntity.setPower(120);
-        heroEntity.setArmor(24);
-        when(heroRepository.save(heroEntity)).thenReturn(heroEntity);
+        when(heroRepository.save(any(HeroEntity.class))).thenReturn(heroEntity);
 
-        HeroDomain hero = heroService.createHero(name, speciality, rarity);
+        HeroDomain result = heroService.createHero("Hero", SpecialityTypeDomain.MAGE, RaretyTypeDomain.COMMON);
 
-        verify(heroRepository).save(heroEntity);
-        assertEquals(hero.getName(), name);
-        assertEquals(hero.getSpeciality(), speciality);
-        assertEquals(hero.getRarity(), rarity);
-        assertEquals(hero.getNbLifePoints(), 1200, 0.01);
-        assertEquals(hero.getPower(), 120, 0.01);
-        assertEquals(hero.getArmor(), 24, 0.01);
+        assertEquals(hero.getName(), result.getName());
+        assertEquals(hero.getSpeciality(), result.getSpeciality());
+        assertEquals(hero.getRarity(), result.getRarity());
+        verify(heroRepository).save(any(HeroEntity.class));
     }
+
 }

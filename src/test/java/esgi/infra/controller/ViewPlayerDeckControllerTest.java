@@ -1,14 +1,25 @@
 package esgi.infra.controller;
 
+import esgi.domain.HeroDomain;
+import esgi.domain.PlayerDomain;
+import esgi.domain.RaretyTypeDomain;
+import esgi.domain.SpecialityTypeDomain;
+import esgi.infra.response.MessageResponse;
+import esgi.infra.service.GetByIdPlayerService;
+import esgi.infra.service.ViewPlayerDeckService;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import esgi.domain.RaretyTypeDomain;
-import esgi.domain.SpecialityTypeDomain;
-import esgi.infra.service.GetByIdPlayerService;
-import esgi.infra.service.ViewPlayerDeckService;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ViewPlayerDeckControllerTest {
@@ -26,29 +37,29 @@ public class ViewPlayerDeckControllerTest {
     @InjectMocks
     private ViewPlayerDeckController viewPlayerDeckController;
 
-    // @Test
-    // public void viewPlayerDeck_PlayerNotFound_ShouldReturn404() {
-    //     when(getByIdPlayerService.getById(PLAYER_ID)).thenReturn(Optional.empty());
+    @Test
+    public void testViewPlayerDeck() {
+        // setup
+        Long idplayer = 1L;
+        PlayerDomain player = mock(PlayerDomain.class);
+        List<HeroDomain> heros = Arrays.asList(new HeroDomain(), new HeroDomain());
 
-    //     ResponseEntity<?> result = viewPlayerDeckController.viewPlayerDeck(PLAYER_ID);
+        // stub methods
+        when(getByIdPlayerService.getById(idplayer)).thenReturn(player);
+        when(viewPlayerDeckService.viewPlayerDeck(player)).thenReturn(heros);
 
-    //     assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-    //     assertEquals("Player not found !", ((MessageResponse) result.getBody()).getMap().get("message"));
-    // }
+        // execute
+        ResponseEntity<?> response = viewPlayerDeckController.viewPlayerDeck(idplayer);
 
-    // @Test
-    // public void viewPlayerDeck_Success_ShouldReturn200() {
-    //     Player player = new Player(PLAYER_PSEUDO);
-    //     Hero hero = new Hero("test", HERO_SPECIALITY, HERO_RARETY);
-    //     player.getDeck().addHero(hero);
-    //     when(getByIdPlayerService.getById(PLAYER_ID)).thenReturn(Optional.of(player));
-    //     when(viewPlayerDeckService.viewPlayerDeck(player)).thenReturn(player.getDeck().getHeros());
+        // verify
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Action succes !", ((MessageResponse) response.getBody()).getMap().get("message"));
+        assertEquals(heros, ((MessageResponse) response.getBody()).getMap().get("data"));
 
-    //     ResponseEntity<?> result = viewPlayerDeckController.viewPlayerDeck(PLAYER_ID);
+        // verify interaction with mock objects
+        verify(getByIdPlayerService).getById(idplayer);
+        verify(viewPlayerDeckService).viewPlayerDeck(player);
+    }
 
-    //     assertEquals(HttpStatus.OK, result.getStatusCode());
-    //     assertEquals("Action succes !", ((MessageResponse) result.getBody()).getMap().get("message"));
-    //     assertEquals(player.getDeck().getHeros(), ((MessageResponse) result.getBody()).getMap().get("data"));
-    // }
 
 }

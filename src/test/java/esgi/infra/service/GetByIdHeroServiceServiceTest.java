@@ -6,10 +6,12 @@ import esgi.domain.SpecialityTypeDomain;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.HeroRepository;
 import esgi.infra.service.impl.HerosServiceImpl;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -25,6 +27,11 @@ public class GetByIdHeroServiceServiceTest {
 
     @InjectMocks
     private HerosServiceImpl herosService;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
     @Test
     public void testGetById() {
         HeroEntity heroEntity = new HeroEntity(1L, "Superman", 100, 0, 10, 5, SpecialityTypeDomain.TANK,
@@ -47,11 +54,10 @@ public class GetByIdHeroServiceServiceTest {
         assertTrue(hero.isStatus());
     }
 
-    @org.junit.Test(expected  = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testGetById_HeroNotFound_ShouldThrowException() {
-        when(heroRepository.findById(1L)).thenReturn(Optional.empty());
-
-        herosService.getById(1L);
+        Long heroId = 1L;
+        when(heroRepository.findById(heroId)).thenReturn(Optional.empty());
+        herosService.getById(heroId);
     }
-
 }

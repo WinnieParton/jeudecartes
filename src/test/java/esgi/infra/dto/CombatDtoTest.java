@@ -1,14 +1,24 @@
 package esgi.infra.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(MockitoExtension.class)
 public class CombatDtoTest {
+    ValidatorFactory factory = Validation.byDefaultProvider().configure().messageInterpolator(new ParameterMessageInterpolator()).buildValidatorFactory();
+    Validator validator = factory.getValidator();
+
     @Test
     public void testCombatDto() {
         CombatDto combatDto = new CombatDto();
@@ -25,9 +35,17 @@ public class CombatDtoTest {
     @Test
     public void testCombatDto_NotBlank() {
         CombatDto combatDto = new CombatDto();
-        assertNotNull(combatDto.getAttackerPlayer());
-        assertNotNull(combatDto.getDefenderPlayer());
-        assertNotNull(combatDto.getAttackerHero());
-        assertNotNull(combatDto.getDefenderHero());
+        combatDto.setAttackerHero(1L);
+        combatDto.setDefenderHero(2L);
+
+        Set<ConstraintViolation<CombatDto>> violations = validator.validate(combatDto);
+
+        assertEquals(2, violations.size());
+        for (ConstraintViolation<CombatDto> violation : violations) {
+            assertEquals("ne doit pas être nul", violation.getMessage());
+            assertTrue(violation.getPropertyPath().toString().equals("attackerPlayer") ||
+                    violation.getPropertyPath().toString().equals("defenderPlayer"));
+        }
     }
+
 }

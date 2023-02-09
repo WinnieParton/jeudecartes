@@ -1,10 +1,13 @@
 package esgi.infra.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
+import esgi.domain.HeroDomain;
+import esgi.domain.PackHeroTypeDomain;
+import esgi.domain.PlayerDomain;
+import esgi.infra.dto.DeskAddPlayerDto;
+import esgi.infra.response.MessageResponse;
+import esgi.infra.service.GetByIdPlayerService;
+import esgi.infra.service.OpenPackService;
+import esgi.infra.service.VerifyJetonService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,14 +20,10 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import esgi.domain.HeroDomain;
-import esgi.domain.PackHeroTypeDomain;
-import esgi.domain.PlayerDomain;
-import esgi.infra.dto.DeskAddPlayerDto;
-import esgi.infra.response.MessageResponse;
-import esgi.infra.service.GetByIdPlayerService;
-import esgi.infra.service.OpenPackService;
-import esgi.infra.service.VerifyJetonService;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DeckApprovisionHerosControllerTest {
@@ -69,8 +68,7 @@ public class DeckApprovisionHerosControllerTest {
         ResponseEntity<?> result = deckApprovisionHerosController.addDeskPlayer(new DeskAddPlayerDto());
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Erreur de validation de data", ((MessageResponse) result.getBody()).getMap().get("message"));
-        // assertTrue(result.getBody().getClass()..contains("pack: Pack is required"));
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+        assertEquals("Player don't have jeton to buy heros", ((MessageResponse) result.getBody()).getMap().get("message"));
     }
 }

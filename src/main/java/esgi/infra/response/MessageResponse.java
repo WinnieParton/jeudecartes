@@ -1,13 +1,11 @@
 package esgi.infra.response;
 
+import lombok.Getter;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Getter
-@Setter
 public class MessageResponse {
     private Map<String, Object> map = new LinkedHashMap<String, Object>();
 

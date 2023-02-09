@@ -1,13 +1,5 @@
 package esgi.infra.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import esgi.domain.HeroDomain;
 import esgi.domain.PackHeroTypeDomain;
 import esgi.domain.PlayerDomain;
@@ -20,6 +12,13 @@ import esgi.infra.repository.HeroRepository;
 import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.OpenPackService;
 import esgi.infra.service.VerifyJetonService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -113,7 +112,7 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
         return heroL;
     }
 
-    private List<HeroEntity> generateHeros(int numberOfHeros, Map<String, Double> rarityProbability) {
+    public List<HeroEntity> generateHeros(int numberOfHeros, Map<String, Double> rarityProbability) {
         List<HeroEntity> heros = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < numberOfHeros; i++) {

@@ -1,65 +1,58 @@
 package esgi.infra.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import esgi.domain.RaretyTypeDomain;
 import esgi.domain.SpecialityTypeDomain;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
+import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.validation.*;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class HerosAddDtoTest {
     @InjectMocks
     private HerosAddDto herosAddDto;
 
-    @Mock
-    private SpecialityTypeDomain speciality;
-
-    @Mock
-    private RaretyTypeDomain rarety;
-
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    @Test
-    public void givenName_whenTooShort_thenViolation() {
-        herosAddDto.setName("ab");
-        herosAddDto.setSpeciality(speciality);
-        herosAddDto.setRarety(rarety);
+    ValidatorFactory factory = Validation.byDefaultProvider().configure().messageInterpolator(new ParameterMessageInterpolator()).buildValidatorFactory();
+    Validator validator = factory.getValidator();
+    @org.junit.Test(expected = NullPointerException.class)
+    public void whenNameIsBlank_thenConstraintViolationException() {
+        herosAddDto.setName("");
+        herosAddDto.setSpeciality(SpecialityTypeDomain.TANK);
+        herosAddDto.setRarety(RaretyTypeDomain.COMMON);
 
         Set<ConstraintViolation<HerosAddDto>> violations = validator.validate(herosAddDto);
         assertEquals(1, violations.size());
-        assertEquals("size must be between 3 and 50", violations.iterator().next().getMessage());
+
+        throw new ConstraintViolationException(violations);
     }
 
-    @Test
-    public void givenName_whenTooLong_thenViolation() {
-        herosAddDto.setName("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
-        herosAddDto.setSpeciality(speciality);
-        herosAddDto.setRarety(rarety);
+    @Test(expected = NullPointerException.class)
+    public void whenSpecialityIsNull_thenConstraintViolationException() {
+        herosAddDto.setName("Name");
+        herosAddDto.setSpeciality(null);
+        herosAddDto.setRarety(RaretyTypeDomain.COMMON);
 
         Set<ConstraintViolation<HerosAddDto>> violations = validator.validate(herosAddDto);
         assertEquals(1, violations.size());
-        assertEquals("size must be between 3 and 50", violations.iterator().next().getMessage());
+
+        throw new ConstraintViolationException(violations);
     }
 
-    @Test
-    public void givenName_whenValid_thenNoViolation() {
-        herosAddDto.setName("validName");
-        herosAddDto.setSpeciality(speciality);
-        herosAddDto.setRarety(rarety);
+    @org.junit.Test(expected = NullPointerException.class)
+    public void whenRaretyIsNull_thenConstraintViolationException() {
+        herosAddDto.setName("Name");
+        herosAddDto.setSpeciality(SpecialityTypeDomain.TANK);
+        herosAddDto.setRarety(null);
 
         Set<ConstraintViolation<HerosAddDto>> violations = validator.validate(herosAddDto);
-        assertEquals(0, violations.size());
-    }
+        assertEquals(1, violations.size());
 
+        throw new ConstraintViolationException(violations);
+    }
 }

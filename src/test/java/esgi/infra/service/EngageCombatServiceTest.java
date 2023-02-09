@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,24 +54,46 @@ public class EngageCombatServiceTest {
         attacker.setArmor(20);
         defender.setArmor(5);
         int damage = combatService.calculateDamage(attacker, defender);
-
         assertEquals(5, damage);
+
+        attacker.setSpeciality(SpecialityTypeDomain.ASSASSIN);
+        int damage1 = combatService.calculateDamage(attacker, defender);
+        assertEquals(35, damage1);
+
+        attacker.setSpeciality(SpecialityTypeDomain.TANK);
+        defender.setSpeciality(SpecialityTypeDomain.MAGE);
+        int damage2 = combatService.calculateDamage(attacker, defender);
+        assertEquals(25, damage2);
+
+        attacker.setSpeciality(SpecialityTypeDomain.MAGE);
+        defender.setSpeciality(SpecialityTypeDomain.ASSASSIN);
+        int damage3 = combatService.calculateDamage(attacker, defender);
+        assertEquals(30, damage3);
     }
 
     @Test
     public void testAttack() {
-        HeroEntity attacker = new HeroEntity("Attacker", SpecialityTypeDomain.MAGE, RaretyTypeDomain.COMMON);
-        HeroEntity defender = new HeroEntity("Defender", SpecialityTypeDomain.TANK, RaretyTypeDomain.LEGENDARY);
-        attacker.setPower(10);
-        defender.setPower(30);
-        attacker.setArmor(20);
-        defender.setArmor(5);
-        when(heroRepository.findById(1L)).thenReturn(Optional.of(attacker));
-        when(heroRepository.findById(2L)).thenReturn(Optional.of(defender));
+        Long HERO_ID = 1L;
+        Long ENEMY_ID = 2L;
+        HeroEntity hero = new HeroEntity();
+        hero.setId(1L);
+        hero.setPower(10);
+        hero.setArmor(5);
+        hero.setSpeciality(SpecialityTypeDomain.MAGE);
+        hero.setNbLifePoints(100);
 
-        int result = combatService.attack(attacker, defender);
+        HeroEntity enemy = new HeroEntity();
+        enemy.setId(2L);
+        enemy.setPower(5);
+        enemy.setArmor(7);
+        enemy.setSpeciality(SpecialityTypeDomain.TANK);
+        enemy.setNbLifePoints(90);
 
-        assertEquals(5, result);
-        assertEquals(5, defender.getNbLifePoints());
+        lenient().when(heroRepository.findById(HERO_ID)).thenReturn(Optional.of(hero));
+        lenient().when(heroRepository.findById(ENEMY_ID)).thenReturn(Optional.of(enemy));
+
+        int damage = combatService.attack(hero, enemy);
+        assertEquals(3, damage);
+        assertEquals(87, enemy.getNbLifePoints());
     }
 }

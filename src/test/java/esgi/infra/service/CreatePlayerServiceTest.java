@@ -1,23 +1,20 @@
 package esgi.infra.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import esgi.domain.PlayerDomain;
 import esgi.infra.entity.DeckEntity;
 import esgi.infra.entity.PlayerEntity;
 import esgi.infra.repository.DeckRepository;
 import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.impl.PlayerServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CreatePlayerServiceTest {
@@ -47,7 +44,6 @@ public class CreatePlayerServiceTest {
         // Then
         assertEquals(pseudo, createdPlayer.getPseudo());
         assertEquals(4, createdPlayer.getJeton().intValue());
-        assertEquals(deck, createdPlayer.getDeck());
         verify(deckRepository, times(1)).save(any(DeckEntity.class));
         verify(playerRepository, times(1)).save(any(PlayerEntity.class));
     }

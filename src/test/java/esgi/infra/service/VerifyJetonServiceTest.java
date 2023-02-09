@@ -2,7 +2,6 @@ package esgi.infra.service;
 
 import esgi.domain.PackHeroTypeDomain;
 import esgi.domain.PlayerDomain;
-import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.impl.DeckServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +14,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class VerifyJetonServiceTest {
-    @Mock
-    private PlayerRepository playerRepository;
 
     @InjectMocks
     private DeckServiceImpl deckService;
