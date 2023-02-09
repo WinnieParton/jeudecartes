@@ -4,9 +4,10 @@ import java.sql.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class HeroDomain {
     private Long id;
 
@@ -33,6 +34,24 @@ public class HeroDomain {
     private Date createdAt;
 
     private Date updatedAt;
+
+    public HeroDomain(Long id, String name, int nbLifePoints, Integer experience, int power, int armor,
+            SpecialityTypeDomain speciality, RaretyTypeDomain rarity, Integer level, boolean available, boolean status,
+            Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.nbLifePoints = nbLifePoints;
+        this.experience = experience;
+        this.power = power;
+        this.armor = armor;
+        this.speciality = speciality;
+        this.rarity = rarity;
+        this.level = level;
+        this.available = available;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     
 }

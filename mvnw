@@ -55,8 +55,8 @@ cygwin=false;
 darwin=false;
 mingw=false
 case "`uname`" in
-  CYGWIN*) cygwin=true ;;
-  MINGW*) mingw=true;;
+  CYGWIN*) cygwin=true ;
+  MINGW*) mingw=true;
   Darwin*) darwin=true
     # Use /usr/libexec/java_home if available, otherwise fall back to /Library/Java/Home
     # See https://developer.apple.com/library/mac/qa/qa1170/_index.html
@@ -67,7 +67,7 @@ case "`uname`" in
         export JAVA_HOME="/Library/Java/Home"
       fi
     fi
-    ;;
+    ;
 esac
 
 if [ -z "$JAVA_HOME" ] ; then
@@ -221,7 +221,7 @@ else
       jarUrl="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
     fi
     while IFS="=" read key value; do
-      case "$key" in (wrapperUrl) jarUrl="$value"; break ;;
+      case "$key" in (wrapperUrl) jarUrl="$value"; break ;
       esac
     done < "$BASE_DIR/.mvn/wrapper/maven-wrapper.properties"
     if [ "$MVNW_VERBOSE" = true ]; then

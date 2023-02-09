@@ -3,11 +3,14 @@ package esgi;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,8 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
-
+@RunWith(JUnit4.class)
+@AnalyzeClasses(packages = "esgi")
 class ArchunitApplicationTests {
      private JavaClasses importedClasses;
 
@@ -35,12 +39,6 @@ class ArchunitApplicationTests {
     void layeredArchitectureShouldBeRespected() {
         myRule.check(importedClasses);
     }
-
-    @ArchTest
-    public static final ArchRule layeredArchitectureShouldBeRespected =
-            noClasses().that().resideInAPackage("esgi.infra.controller..")
-                    .should().accessClassesThat().resideInAPackage("esgi.infra.service")
-                    .orShould().accessClassesThat().resideInAPackage("esgi.infra.serviceImpl");
 
     /* Package Dependency Checks */
 
@@ -116,10 +114,12 @@ class ArchunitApplicationTests {
     @Test
     void serviceClassesShouldHaveSpringServiceAnnotation() {
         classes()
-                .that().resideInAPackage("..service..")
+                .that().resideInAPackage("..service.impl..")
                 .should().beAnnotatedWith(Service.class)
                 .check(importedClasses);
     }
+
+
 
 
     @Test

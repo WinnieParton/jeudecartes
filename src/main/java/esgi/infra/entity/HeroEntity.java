@@ -26,9 +26,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "heros")
+@NoArgsConstructor
 public class HeroEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

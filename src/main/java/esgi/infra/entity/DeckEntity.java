@@ -46,4 +46,8 @@ public class DeckEntity implements Serializable {
     public void addAll(List<HeroEntity> heros) {
         this.heros.addAll(heros);
     }
+
+    public void addHero(HeroEntity hero) {
+        this.heros.add(hero);
+    }
 }

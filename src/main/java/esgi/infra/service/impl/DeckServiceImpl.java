@@ -1,5 +1,13 @@
 package esgi.infra.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import esgi.domain.HeroDomain;
 import esgi.domain.PackHeroTypeDomain;
 import esgi.domain.PlayerDomain;
@@ -12,13 +20,6 @@ import esgi.infra.repository.HeroRepository;
 import esgi.infra.repository.PlayerRepository;
 import esgi.infra.service.OpenPackService;
 import esgi.infra.service.VerifyJetonService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -26,8 +27,6 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
     private final PlayerRepository playerRepository;
     private final HeroRepository heroRepository;
     private final DeckRepository deckRepository;
-
-    
 
     public DeckServiceImpl(PlayerRepository playerRepository, HeroRepository heroRepository,
             DeckRepository deckRepository) {
@@ -92,7 +91,6 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
                 player.getNbrTiragePackArgent(), player.getNbrTiragePackDiament(),
                 player.getCreatedAt(), player.getUpdatedAt());
 
-
         // ajouter les cartes au deck du joueur
         play.getDeck().addAll(heros);
 
@@ -104,8 +102,8 @@ public class DeckServiceImpl implements VerifyJetonService, OpenPackService {
 
         for (HeroEntity heroEntity : heros) {
             var hero = new HeroDomain(heroEntity.getId(), heroEntity.getName(),
-              
-            heroEntity.getNbLifePoints(), heroEntity.getExperience(),
+
+                    heroEntity.getNbLifePoints(), heroEntity.getExperience(),
                     heroEntity.getPower(), heroEntity.getArmor(), heroEntity.getSpeciality(),
                     heroEntity.getRarity(), heroEntity.getLevel(), heroEntity.isAvailable(),
                     heroEntity.isStatus(), heroEntity.getCreatedAt(), heroEntity.getUpdatedAt());
