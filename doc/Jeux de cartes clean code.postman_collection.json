@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"picket\",\r\n    \"speciality\":\"ASSASSIN\",\r\n    \"rarety\":\"RARE\"\r\n}",
+					"raw": "{\r\n    \"name\":\"pockemon\",\r\n    \"speciality\":\"TANK\",\r\n    \"rarety\":\"COMMON\"\r\n}\r\n//Specialite: TANK, ASSASSIN, MAGE\r\n//Rarety: COMMON, RARE, LEGENDARY",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,7 +87,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"pack\":\"diamant\",\r\n    \"player\":\"2\"\r\n}",
+					"raw": "{\r\n    \"pack\":\"diamant\",\r\n    \"player\":\"3\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -134,7 +134,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"attackerPlayer\":1,\r\n    \"defenderPlayer\":1,\r\n    \"attackerHero\":1,\r\n    \"defenderHero\":1\r\n}",
+					"raw": "{\r\n    \"attackerPlayer\":3,\r\n    \"defenderPlayer\":2,\r\n    \"attackerHero\":6,\r\n    \"defenderHero\":1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -161,7 +161,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/hero/combat/5",
+					"raw": "localhost:8080/api/hero/combat/6",
 					"host": [
 						"localhost"
 					],
@@ -170,7 +170,7 @@
 						"api",
 						"hero",
 						"combat",
-						"5"
+						"6"
 					]
 				}
 			},

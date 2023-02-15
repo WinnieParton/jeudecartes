@@ -26,10 +26,10 @@ public class CombatDtoTest {
         combatDto.setDefenderPlayer(2L);
         combatDto.setAttackerHero(3L);
         combatDto.setDefenderHero(4L);
-        assertEquals(new Long(1), combatDto.getAttackerPlayer());
-        assertEquals(new Long(2), combatDto.getDefenderPlayer());
-        assertEquals(new Long(3), combatDto.getAttackerHero());
-        assertEquals(new Long(4), combatDto.getDefenderHero());
+        assertEquals(Long.valueOf(1), combatDto.getAttackerPlayer());
+        assertEquals(Long.valueOf(2), combatDto.getDefenderPlayer());
+        assertEquals(Long.valueOf(3), combatDto.getAttackerHero());
+        assertEquals(Long.valueOf(4), combatDto.getDefenderHero());
     }
 
     @Test

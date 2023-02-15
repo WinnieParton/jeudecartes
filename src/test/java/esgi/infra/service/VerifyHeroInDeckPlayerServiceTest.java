@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +28,7 @@ public class VerifyHeroInDeckPlayerServiceTest {
         PlayerDomain player = mock(PlayerDomain.class);
         HeroDomain hero = mock(HeroDomain.class);
         DeckDomain deck = mock(DeckDomain.class);
-        List<HeroDomain> heros = Arrays.asList(hero);
+        List<HeroDomain> heros = Collections.singletonList(hero);
 
         when(player.getDeck()).thenReturn(deck);
         when(deck.getHeros()).thenReturn(heros);

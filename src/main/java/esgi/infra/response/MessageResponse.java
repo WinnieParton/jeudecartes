@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Getter
 public class MessageResponse {
-    private Map<String, Object> map = new LinkedHashMap<String, Object>();
+    private final Map<String, Object> map = new LinkedHashMap<String, Object>();
 
     public MessageResponse(String message) {
         this.map.put("message", message);

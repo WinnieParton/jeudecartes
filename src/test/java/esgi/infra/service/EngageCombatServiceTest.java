@@ -1,7 +1,10 @@
 package esgi.infra.service;
 
+import esgi.domain.HeroDomain;
 import esgi.domain.RaretyTypeDomain;
 import esgi.domain.SpecialityTypeDomain;
+import esgi.infra.entity.CombatEntity;
+import esgi.infra.entity.CombatHistoryEntity;
 import esgi.infra.entity.HeroEntity;
 import esgi.infra.repository.CombatHistoryRepository;
 import esgi.infra.repository.CombatRepository;
@@ -16,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EngageCombatServiceTest {
@@ -42,7 +45,7 @@ public class EngageCombatServiceTest {
 
         boolean result = combatService.isAlive(1L);
 
-        assertEquals(false, result);
+        assertFalse(result);
     }
 
     @Test
@@ -95,5 +98,67 @@ public class EngageCombatServiceTest {
         int damage = combatService.attack(hero, enemy);
         assertEquals(3, damage);
         assertEquals(87, enemy.getNbLifePoints());
+    }
+
+    @Test
+    public void testAddExperiencePoints() {
+        // Create a mock HeroEntity with some initial experience
+        HeroEntity hero = new HeroEntity();
+        hero.setExperience(10);
+        hero.setNbLifePoints(10);
+        hero.setPower(10);
+        // Call the method to add experience points
+        combatService.addExperiencePoints(hero, 5);
+
+        // Verify that the HeroEntity was updated with the correct experience points and level
+        assertEquals(15, hero.getExperience());
+        assertEquals(2, hero.getLevel());
+        assertEquals(11, hero.getNbLifePoints());
+        assertEquals(11, hero.getPower());
+        assertEquals(0, hero.getArmor());
+
+        // Verify that the HeroRepository save method was called with the updated HeroEntity
+        verify(heroRepository).save(hero);
+    }
+
+    @Test
+    public void testEngageCombat() {
+        // Create some HeroDomain instances for testing
+        HeroDomain atHero = new HeroDomain(1L, "Attacker", 100, 0, 50, 30, SpecialityTypeDomain.TANK, RaretyTypeDomain.COMMON, 1, true, true, null, null);
+        HeroDomain defHero = new HeroDomain(2L, "Defender", 80, 0, 40, 25, SpecialityTypeDomain.ASSASSIN, RaretyTypeDomain.LEGENDARY, 1, true, true, null, null);
+
+        // Create some HeroEntity instances for mocking
+        HeroEntity atHeroEntity = new HeroEntity(1L, "Attacker", 100, 0, 50, 30, SpecialityTypeDomain.TANK, RaretyTypeDomain.COMMON, 1, true, true, null, null);
+        HeroEntity defHeroEntity = new HeroEntity(2L, "Defender", 80, 0, 40, 25, SpecialityTypeDomain.ASSASSIN, RaretyTypeDomain.LEGENDARY, 1, true, true, null, null);
+
+
+        // Mock the heroRepository to return the appropriate HeroEntity instances
+
+        CombatEntity combat = new CombatEntity(atHeroEntity, defHeroEntity);
+        CombatHistoryEntity combatHistory = new CombatHistoryEntity();
+        combatHistory.setDamageAttackerHero(2);
+        combatHistory.setNewLifePointsDefender(8);
+        combatHistory.setResult("Draw");
+
+        // Mock the repository calls
+        when(heroRepository.findById(atHero.getId())).thenReturn(Optional.of(atHeroEntity));
+        when(heroRepository.findById(defHero.getId())).thenReturn(Optional.of(defHeroEntity));
+
+        when(heroRepository.save(atHeroEntity)).thenReturn(atHeroEntity);
+        when(heroRepository.save(defHeroEntity)).thenReturn(defHeroEntity);
+        when(combatRepository.save(any(CombatEntity.class))).thenReturn(combat);
+        when(combatHistoryRepository.save(any(CombatHistoryEntity.class))).thenReturn(combatHistory);
+
+        // Call the method being tested
+        String result = combatService.engageCombat(atHero, defHero);
+
+        // Verify the expected results
+        verify(heroRepository, times(24)).findById(any(Long.class));
+        verify(combatRepository, times(4)).save(any(CombatEntity.class));
+        verify(combatRepository, never()).findById(any(Long.class));
+        verify(heroRepository, times(8)).save(any(HeroEntity.class));
+        verify(combatHistoryRepository, times(3)).save(any(CombatHistoryEntity.class));
+        verifyNoMoreInteractions(heroRepository, combatRepository, combatHistoryRepository);
+
     }
 }
