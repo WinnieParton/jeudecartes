@@ -18,7 +18,8 @@ env:
   SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
 jobs:
-  build:
+  tests:
+    name: Unit tests
     runs-on: ubuntu-latest
     services:
       postgres:
