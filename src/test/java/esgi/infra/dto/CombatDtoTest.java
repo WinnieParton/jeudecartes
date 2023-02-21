@@ -42,7 +42,7 @@ public class CombatDtoTest {
 
         assertEquals(2, violations.size());
         for (ConstraintViolation<CombatDto> violation : violations) {
-            assertEquals("ne doit pas être nul", violation.getMessage());
+            assertEquals("must not be null", violation.getMessage());
             assertTrue(violation.getPropertyPath().toString().equals("attackerPlayer") ||
                     violation.getPropertyPath().toString().equals("defenderPlayer"));
         }
