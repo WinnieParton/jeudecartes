@@ -211,7 +211,7 @@ public class CombatServiceImpl implements EngageCombatService, RetrieveHeroComba
 
           return (comb1.isPresent() && comb1.get().getResult().equals("Draw")
                     || comb2.isPresent() && comb2.get().getResult().equals("Draw")
-                    || !comb1.isPresent() || !comb1.isPresent());
+                    || !comb1.isPresent() || !comb2.isPresent());
 
      }
 
