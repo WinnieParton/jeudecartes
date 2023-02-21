@@ -10,6 +10,7 @@ on:
 env:
   DOCKER_USERNAME: winniemonel
   POSTGRES_PORT: 5432
+  POSTGRES_HOST: localhost
   POSTGRES_USER: winniemonel
   POSTGRES_PASSWORD: secret
   POSTGRES_DB: consulting
