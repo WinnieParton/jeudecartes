@@ -41,6 +41,8 @@ jobs:
           distribution: 'temurin'
           java-version: '19'
           overwrite-settings: false
+      - name: Run Clean
+        run: mvn clean install
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
@@ -49,6 +51,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Tests
         run: mvn -B -X test
+      
   sonar:
     #Depends on test's job
     needs: tests
